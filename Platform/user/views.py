@@ -14,11 +14,11 @@ def test(request):
         return JsonResponse({'errno':1001,'msg':"测试失败"})
 
 def register(request):
-    if(request.method)=='POST':
+    if request.method=='POST':
         username=request.POST.get('username')
         password_1=request.POST.get('password_1')
         password_2=request.POST.get('password_2')
-        truename=request.POST.get('truename')
+        realname=request.POST.get('realname')
         email=request.POST.get('email')
         verification_code=request.POST.get('verification_code')
         isEmail=request.POST.get('isEmail')
@@ -46,11 +46,11 @@ def register(request):
 
             del verification_info
             new_user = User(username=username, password=password_1, 
-            truename=truename,nickname=username,email=email)
+            realname=realname,nickname=username,email=email)
         else:
             # 新建 User 对象，赋值用户名和密码并保存
             new_user = User(username=username, password=password_1, 
-            truename=truename,nickname=username)
+            realname=realname,nickname=username)
         new_user.save()  # 一定要save才能保存到数据库中
         return JsonResponse({'errno': 0, 'msg': "注册成功"})
     else:
@@ -78,9 +78,9 @@ def sendcode(request):
             )
 
             email.send()
-            return JsonResponse({'success': True, 'message': '验证码已发送', 'expiration_time': expiration_time.timestamp()})
+            return JsonResponse({'errno': 0, 'message': '验证码已发送', 'expiration_time': expiration_time.timestamp()})
         else:
-            return JsonResponse({'success': False, 'message': '未提供有效的邮箱地址！'})
+            return JsonResponse({'errno': 1002, 'message': '未提供有效的邮箱地址！'})
     else:
         return JsonResponse({'errno': 1001, 'msg': "请求方式错误"})
 
@@ -98,7 +98,8 @@ def login(request):
         try:
             user=User.objects.get(username=username)
             if user.password==password:
-                return JsonResponse({'errno': 0, 'msg': "登录成功"})
+                id=user.id
+                return JsonResponse({'errno': 0, 'msg': "登录成功",'id':id})
             else:
                 return JsonResponse({'errno': 1003, 'msg': "密码错误"})
         except User.DoesNotExist:
