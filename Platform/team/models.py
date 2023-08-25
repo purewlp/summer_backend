@@ -52,3 +52,18 @@ class Membership(models.Model):
         super().save(*args, **kwargs)
     class Meta:
         db_table='membership'
+
+class Invitation(models.Model):
+    team=models.ForeignKey(Team,on_delete=models.CASCADE)
+    inviter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='invitations_sent',null=True)
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='invitations_received',null=True)
+    def save(self,*args,**kwargs):
+        if self.id is None:
+            # 如果 ID 为空，为其分配一个从 1 开始的值
+            last_invitation = Invitation.objects.order_by('-id').first()
+            if last_invitation:
+                self.id = last_invitation.id + 1
+            else:
+                self.id = 1
+
+        super().save(*args, **kwargs)
