@@ -107,3 +107,18 @@ def login(request):
 
     else:
         return JsonResponse({'errno': 1001, 'msg': "请求方式错误"})
+
+def logout(request):
+    if request.method == 'POST':
+        return JsonResponse({'errno':0,'msg':"成功退出登录"})
+    return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+
+def changeNickname(request):
+    if request.method == 'POST':
+        id=request.POST.get('id')
+        nickname=request.POST.get('nickname')
+        user=User.objects.get(id=id)
+        user.nickname=nickname
+        user.save()
+        return JsonResponse({'errno':0,'msg':"成功修改昵称"})
+    return JsonResponse({'errno':1001,'msg':"请求方式错误"})
