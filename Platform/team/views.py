@@ -150,6 +150,21 @@ def custom_sort_rule(member):
         role_order = 3
     return (role_order, nickname)
 
+def teamList(request):
+    if request.method == 'POST':
+        id=request.POST.get('id')
+        members=Membership.objects.filter(user_id=id)
+        member_list=[]
+        for member in members:
+            teamID=member.team_id
+            team=Team.objects.get(id=teamID)
+            member_data={
+                "team_id":teamID,
+                "teamname":team.name
+            }
+            member_list.append(member_data)
+        return JsonResponse({'teams':member_list})
+
 def changeTeam(request):
     if request.method=='POST':
         # id=request.POST.get('id')
