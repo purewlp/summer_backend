@@ -10,7 +10,7 @@ class User(models.Model):
     email = models.CharField("email",max_length=30,null=True)
     def user_directory_path(instance, filename):
         # 生成以用户ID命名的子目录，确保文件名不会冲突
-        return f'avatars/user_{instance.id}/{filename}'
+        return f'avatars/user_{instance.id}_{filename}'
     avatar=models.ImageField("avatar",upload_to=user_directory_path,null=True,blank=True)
     def save(self, *args, **kwargs):
         if self.id is None:
