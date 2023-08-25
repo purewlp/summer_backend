@@ -122,3 +122,13 @@ def changeNickname(request):
         user.save()
         return JsonResponse({'errno':0,'msg':"成功修改昵称"})
     return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+
+def uploadAvatar(request):
+    if request.method == 'POST':
+        id=request.POST.get('id')
+        avatar=request.FILES['avatar']
+        user=User.objects.get(id=id)
+        user.avatar=avatar
+        user.save()
+        return JsonResponse({'errno':0,'msg':"上传成功"})
+    return JsonResponse({'errno':1001,'msg':"请求方式错误"})
