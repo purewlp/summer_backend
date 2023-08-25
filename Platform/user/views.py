@@ -112,7 +112,8 @@ def login(request):
 def logout(request):
     if request.method == 'POST':
         return JsonResponse({'errno':0,'msg':"成功退出登录"})
-    return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+    else:
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})
 
 def changeNickname(request):
     if request.method == 'POST':
@@ -122,7 +123,8 @@ def changeNickname(request):
         user.nickname=nickname
         user.save()
         return JsonResponse({'errno':0,'msg':"成功修改昵称"})
-    return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+    else:
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})
 
 def uploadAvatar(request):
     if request.method == 'POST':
@@ -135,12 +137,17 @@ def uploadAvatar(request):
         user.avatar=avatar
         user.save()
         return JsonResponse({'errno':0,'msg':"上传成功"})
-    return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+    else:
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})
 
 def showInfo(request):
     if request.method == 'POST':
         id=request.POST.get('id')
         user=User.objects.get(id=id)
+        if user.avatar:
+            avatar_url=user.avatar.url
+        else:
+            avatar_url=''
         userdata={
             'errno':0,
             'msg':"成功获取信息",
@@ -148,7 +155,7 @@ def showInfo(request):
             'email':user.email,
             'nickname':user.nickname,
             'realname':user.realname,
-            'avatar_url':user.avatar.url
+            'avatar_url':avatar_url
         }
         return JsonResponse(userdata)
     else:

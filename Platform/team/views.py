@@ -51,7 +51,7 @@ def changeRole(request):
             return JsonResponse({'errno':1002,'msg':"抱歉您没有此权限"})
         elif role1==RoleEnum.ADMIN.value:
             if role2!=RoleEnum.MEMBER.value:
-                return JsonResponse({'errno':1002,'msg':"抱歉您没有此权限"})
+                return JsonResponse({'errno':1003,'msg':"抱歉您没有此权限"})
             member2.role=RoleEnum.ADMIN.value
         else:
             if role2==RoleEnum.ADMIN.value:
@@ -83,7 +83,8 @@ def invite(request):
         if not invitation:
             Invitation.objects.create(recipient=user,team=team,inviter=inviter)
         return JsonResponse({'errno':0,'msg':"您已成功发出邀请"})
-    return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+    else:
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})
 
 def receive(request):
     if request.method == 'POST':
@@ -115,28 +116,34 @@ def remove(request):
         member2=Membership.objects.get(user_id=id2,team_id=teamID)
         member2.delete()
         return JsonResponse({'errno':0,'msg':"您已成功将他移出团队"})
-    return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+    else:
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})
 
 def list(request):
-    if request.method == 'POST':
-        # id=request.POST.get('id')
-        teamID=request.POST.get('team_id')
+    if request.method == 'GET':
+        teamID=request.GET.get('team_id')
         members=Membership.objects.filter(team_id=teamID)
         member_list=[]
         for member in members:
             id=member.user_id
             user=User.objects.get(id=id)
+            if user.avatar:
+                avatar_url=user.avatar.url
+            else:
+                avatar_url=''
             member_data={
                 "id":id,
                 "role":member.role,
                 "nickname":user.nickname,
                 "realname":user.realname,
-                "email":user.email
+                "email":user.email,
+                "avatar":avatar_url,
             }
             member_list.append(member_data)
         member_list=sorted(member_list,key=custom_sort_rule)
-        return JsonResponse({'members':member_list})
-    return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+        return JsonResponse({'errno':0,'members':member_list})
+    else:
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})
 
 def custom_sort_rule(member):
     role = member['role']
@@ -151,8 +158,8 @@ def custom_sort_rule(member):
     return (role_order, nickname)
 
 def teamList(request):
-    if request.method == 'POST':
-        id=request.POST.get('id')
+    if request.method == 'GET':
+        id=request.GET.get('id')
         members=Membership.objects.filter(user_id=id)
         member_list=[]
         for member in members:
@@ -163,7 +170,10 @@ def teamList(request):
                 "teamname":team.name
             }
             member_list.append(member_data)
-        return JsonResponse({'teams':member_list})
+        return JsonResponse({'errno':0,'teams':member_list})
+    else:
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+    
 
 def changeTeam(request):
     if request.method=='POST':
@@ -174,14 +184,20 @@ def changeTeam(request):
         for member in members:
             id=member.user_id
             user=User.objects.get(id=id)
+            if user.avatar:
+                avatar_url=user.avatar.url
+            else:
+                avatar_url=''
             member_data={
                 "id":id,
                 "role":member.role,
                 "nickname":user.nickname,
                 "realname":user.realname,
-                "email":user.email
+                "email":user.email,
+                "avatar":avatar_url
             }
             member_list.append(member_data)
         member_list=sorted(member_list,key=custom_sort_rule)
-        return JsonResponse({'members':member_list})
-    return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+        return JsonResponse({'errno':0,'members':member_list})
+    else:
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})

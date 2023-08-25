@@ -8,8 +8,8 @@ urlpatterns=[
     path('invite',invite),
     path('receive',receive),
     path('remove',remove),
-    path('list',list),
-    path('teamlist',teamList),
+    path('list/',list),
+    path('teamlist/',teamList),
     path('changeteam',changeTeam),
     
 ]
