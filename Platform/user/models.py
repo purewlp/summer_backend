@@ -5,7 +5,7 @@ from django.db import models
 class User(models.Model):
     username=models.CharField("name",max_length=100)
     password = models.CharField("password",max_length=20)
-    truename=models.CharField("truename",max_length=20,null=True)
+    realname=models.CharField("realname",max_length=20,null=True)
     nickname=models.CharField("nickname",max_length=20,null=True)
     email = models.CharField("email",max_length=30,null=True)
 
