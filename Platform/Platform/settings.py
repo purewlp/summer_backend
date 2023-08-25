@@ -165,4 +165,4 @@ EMAIL_HOST_PASSWORD = 'fkgpzektnujtijge'  # 使用你的 QQ 邮箱授权码替�
 EMAIL_USE_TLS = True
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = '/home/ubuntu/media/'

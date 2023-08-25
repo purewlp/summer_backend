@@ -132,3 +132,20 @@ def uploadAvatar(request):
         user.save()
         return JsonResponse({'errno':0,'msg':"上传成功"})
     return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+
+def showInfo(request):
+    if request.method == 'POST':
+        id=request.POST.get('id')
+        user=User.objects.get(id=id)
+        userdata={
+            'errno':0,
+            'msg':"成功获取信息",
+            'username':user.username,
+            'email':user.email,
+            'nickname':user.nickname,
+            'realname':user.realname,
+            'avatar_url':user.avatar.url
+        }
+        return JsonResponse(userdata)
+    else:
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})

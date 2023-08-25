@@ -9,4 +9,5 @@ urlpatterns=[
     path('logout',logout),
     path('changenickname',changeNickname),
     path('uploadavatar',uploadAvatar),
+    path('showinfo',showInfo),
 ]
