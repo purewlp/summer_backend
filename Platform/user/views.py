@@ -5,6 +5,7 @@ from django.utils import timezone
 from Platform import settings
 from django.db.models import F
 import random
+import os
 # Create your views here.
 
 def test(request):
@@ -128,6 +129,9 @@ def uploadAvatar(request):
         id=request.POST.get('id')
         avatar=request.FILES['avatar']
         user=User.objects.get(id=id)
+        print(user.avatar)
+        if user.avatar:
+            os.remove(user.avatar.path)
         user.avatar=avatar
         user.save()
         return JsonResponse({'errno':0,'msg':"上传成功"})
