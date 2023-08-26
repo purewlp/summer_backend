@@ -165,9 +165,11 @@ def teamList(request):
         for member in members:
             teamID=member.team_id
             team=Team.objects.get(id=teamID)
+            role=Membership.objects.get(user_id=id,team_id=teamID).role
             member_data={
                 "team_id":teamID,
-                "teamname":team.name
+                "teamname":team.name,
+                "role":role
             }
             member_list.append(member_data)
         return JsonResponse({'errno':0,'teams':member_list})

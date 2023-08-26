@@ -7,5 +7,11 @@ urlpatterns=[
     path('recover',recoverProject),
     path('rename',renameProject),
     path('list/',list),
-    path('binlist/',binlist),
+    path('binlist/',binList),
+    path('ownlist/',ownList),
+    path('deleteagain',deleteAgain),
+    path('finish',finish),
+    path('collect',collect),
+    path('collectlist/',collectList),
+    
 ]
