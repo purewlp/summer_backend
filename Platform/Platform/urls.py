@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -23,11 +23,12 @@ from chat.consumers import ChatConsumer
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/user/",include('user.urls')),
-    path("api/team/",include('team.urls')),
-    path("api/project/",include('project.urls')),
+    path("api/user/", include('user.urls')),
+    path("api/team/", include('team.urls')),
+    path("api/project/", include('project.urls')),
     path("user/", include('message.urls')),
-    path("api/document/",include('document.urls')),
+    path("api/document/", include('document.urls')),
+    path('api/chat/', include('chat.urls')),
 ]
 
 websocket_urlpatterns = [
@@ -35,4 +36,5 @@ websocket_urlpatterns = [
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
