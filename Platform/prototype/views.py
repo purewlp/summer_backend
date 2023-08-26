@@ -12,11 +12,10 @@ def savePrototype(request):
         id = request.POST.get('prototypeID')
         componentData = request.POST.get('componentData')
         canvasStyleData = request.POST.get('canvasStyleData')
-        all = request.POST.get('all')
 
         try:
             prototype = Prototype(id=id, componentData=componentData,
-                                  canvasStyleData=canvasStyleData, all=all)
+                                  canvasStyleData=canvasStyleData)
             prototype.save()
             return JsonResponse({'errno': 0})
         except:
@@ -34,7 +33,6 @@ def getPrototype(request):
             info = {
                 'componentData': prototype.componentData,
                 'canvasStyleData': prototype.canvasStyleData,
-                'all': prototype.all
             }
             return JsonResponse({'errno': 0, 'info': info})
         except:
