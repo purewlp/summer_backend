@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils.text import slugify
 # Create your models here.
 
 class User(models.Model):
@@ -8,6 +8,10 @@ class User(models.Model):
     realname=models.CharField("realname",max_length=20,null=True)
     nickname=models.CharField("nickname",max_length=20,null=True)
     email = models.CharField("email",max_length=30,null=True)
+    def user_directory_path(instance, filename):
+        # 生成以用户ID命名的子目录，确保文件名不会冲突
+        return f'avatars/user/userID_{instance.id}_{filename}'
+    avatar=models.ImageField("avatar",upload_to=user_directory_path,null=True,blank=True)
     def save(self, *args, **kwargs):
         if self.id is None:
             # 如果 ID 为空，为其分配一个从 1 开始的值

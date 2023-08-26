@@ -5,6 +5,7 @@ from django.utils import timezone
 from Platform import settings
 from django.db.models import F
 import random
+import os
 # Create your views here.
 
 def test(request):
@@ -122,3 +123,33 @@ def changeNickname(request):
         user.save()
         return JsonResponse({'errno':0,'msg':"成功修改昵称"})
     return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+
+def uploadAvatar(request):
+    if request.method == 'POST':
+        id=request.POST.get('id')
+        avatar=request.FILES['avatar']
+        user=User.objects.get(id=id)
+        print(user.avatar)
+        if user.avatar:
+            os.remove(user.avatar.path)
+        user.avatar=avatar
+        user.save()
+        return JsonResponse({'errno':0,'msg':"上传成功"})
+    return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+
+def showInfo(request):
+    if request.method == 'POST':
+        id=request.POST.get('id')
+        user=User.objects.get(id=id)
+        userdata={
+            'errno':0,
+            'msg':"成功获取信息",
+            'username':user.username,
+            'email':user.email,
+            'nickname':user.nickname,
+            'realname':user.realname,
+            'avatar_url':user.avatar.url
+        }
+        return JsonResponse(userdata)
+    else:
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})

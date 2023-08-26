@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
     'message',
     'corsheaders',
     'team',
+    'project',
 ]
 
 MIDDLEWARE = [
@@ -163,3 +165,6 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = '1158152324@qq.com'  # 使用你的 QQ 邮箱地址替换
 EMAIL_HOST_PASSWORD = 'fkgpzektnujtijge'  # 使用你的 QQ 邮箱授权码替换
 EMAIL_USE_TLS = True
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = '/home/ubuntu/media/'

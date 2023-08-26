@@ -7,5 +7,7 @@ urlpatterns=[
     path('sendcode',sendcode),
     path('login',login),
     path('logout',logout),
-    path('changenickname',changeNickname)
+    path('changenickname',changeNickname),
+    path('uploadavatar',uploadAvatar),
+    path('showinfo',showInfo),
 ]
