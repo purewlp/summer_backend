@@ -4,9 +4,9 @@ from django.db import models
 
 
 class Prototype(models.Model):
-    id = models.AutoField(primary_key=True)
-    componentData = models.CharField(max_length=255)
-    canvasStyleData = models.CharField(max_length=256)
+    id = models.CharField(primary_key=True, max_length=256)
+    componentData = models.TextField()
+    canvasStyleData = models.TextField()
     title = models.CharField(max_length=64, default='title')
 
 

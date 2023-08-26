@@ -13,13 +13,13 @@ def savePrototype(request):
         componentData = request.POST.get('componentData')
         canvasStyleData = request.POST.get('canvasStyleData')
 
-        try:
-            prototype = Prototype(id=id, componentData=componentData,
-                                  canvasStyleData=canvasStyleData)
-            prototype.save()
-            return JsonResponse({'errno': 0})
-        except:
-            return JsonResponse({'errno': 1002})
+        # try:
+        prototype = Prototype(id=id, componentData=componentData,
+                              canvasStyleData=canvasStyleData)
+        prototype.save()
+        return JsonResponse({'errno': 0})
+        # except:
+        #     return JsonResponse({'errno': 1002})
 
     else:
         return JsonResponse({'errno': 1001})
@@ -30,11 +30,8 @@ def getPrototype(request):
         id = request.GET.get('prototypeID')
         try:
             prototype = Prototype.objects.get(id=id)
-            info = {
-                'componentData': prototype.componentData,
-                'canvasStyleData': prototype.canvasStyleData,
-            }
-            return JsonResponse({'errno': 0, 'info': info})
+            return JsonResponse({'errno': 0, 'componentData': prototype.componentData,
+                                 'canvasStyleData': prototype.canvasStyleData})
         except:
             return JsonResponse({'errno': 1002})
 
