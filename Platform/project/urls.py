@@ -7,4 +7,5 @@ urlpatterns=[
     path('recover',recoverProject),
     path('rename',renameProject),
     path('list/',list),
+    path('binlist/',binlist),
 ]

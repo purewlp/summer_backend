@@ -81,3 +81,24 @@ def list(request):
         return JsonResponse({'errno':0,'project_list':project_list})
     else:
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+
+def binlist(request):
+    if request.method == 'GET':
+        teamID=request.GET.get('team_id')
+        projects=ProjectRecycleBin.objects.filter(team_id=teamID)
+        project_list=[]
+        for project in projects:
+            creator=User.objects.get(id=project.creator_id)
+            deleter=User.objects.get(id=project.deleter_id)
+            project_data={
+                'project_id':project.id,
+                'project_name':project.name,
+                'creator_id':creator.id,
+                'creator_nickname':creator.nickname,
+                'deleter_id':deleter.id,
+                'deleter_nickname':deleter.nickname,
+            }
+            project_list.append(project_data)
+        return JsonResponse({'errno':0,'project_list':project_list})
+    else:
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})
