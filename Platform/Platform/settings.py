@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    'daphne',
     "django.contrib.staticfiles",
+    'channels',
     'user',
     'message',
     'corsheaders',
@@ -101,6 +103,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "Platform.wsgi.application"
+ASGI_APPLICATION = "Platform.asgi.application"
 
 
 # Database

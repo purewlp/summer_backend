@@ -19,11 +19,18 @@ from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from chat.consumers import ChatConsumer
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/user/",include('user.urls')),
     path("api/team/",include('team.urls')),
     path("api/project/",include('project.urls')),
+    path("user/", include('message.urls')),
+]
+
+websocket_urlpatterns = [
+    path(r'ws/chat/', ChatConsumer.as_asgi()),
 ]
 
 if settings.DEBUG:
