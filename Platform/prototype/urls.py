@@ -4,4 +4,5 @@ from .views import *
 urlpatterns = [
     path('saveprototype', savePrototype),
     path('getprototype', getPrototype),
+    path('setprototype', setPrototype),
 ]
