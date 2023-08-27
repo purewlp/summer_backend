@@ -116,6 +116,29 @@ def changeAllMessage(request):
         return JsonResponse({'errno': 1001})
 
 
+def sendMessage(request):
+    if request.method == 'POST':
+        groupId = request.POST.get('groupId')
+        userId = request.POST.get('userId')
+        content = request.POST.get('content')
+        publiserId = request.POST.get('id')
+
+        try:
+            user = User.objects.get(id=userId)
+            message = Message(content=content, publisher=publiserId)
+            message.save()
+            user_message = UserMessage(user=user, message=message)
+            user_message.save()
+            return JsonResponse({'errno': 0})
+        except:
+            return JsonResponse({'errno': 1002})
+
+    else:
+        return JsonResponse({'errno': 1001})
+
+
+
+
 
 
 

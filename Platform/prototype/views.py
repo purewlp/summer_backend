@@ -99,7 +99,7 @@ def getDesign(request):
                 })
             return JsonResponse({'errno': 0, 'prototypes': prototypes})
         except:
-            return JsonResponse({'errno': 1001})
+            return JsonResponse({'errno': 1002})
 
     else:
         return JsonResponse({'errno': 1001})
@@ -114,10 +114,10 @@ def rename(request):
             prototype.save()
             return JsonResponse({'errno': 0})
         except:
-            return JsonResponse({'errno': 1001})
+            return JsonResponse({'errno': 1002})
 
     else:
-        return JsonResponse({'errno': 1002})
+        return JsonResponse({'errno': 1001})
 
 
 

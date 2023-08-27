@@ -7,7 +7,7 @@ class Message(models.Model):
     id = models.AutoField(primary_key=True)
     content = models.TextField()
     time = models.DateTimeField(auto_now_add=True)
-    link = models.CharField(max_length=512)
+    link = models.CharField(max_length=512, null=True)
 
     # False 未读  True 已读
     status = models.BooleanField(default=False)
