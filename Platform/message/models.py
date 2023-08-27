@@ -8,6 +8,7 @@ class Message(models.Model):
     content = models.TextField()
     time = models.DateTimeField(auto_now_add=True)
     link = models.CharField(max_length=512, null=True)
+    isInvited = models.BooleanField(default=False)
 
     # False 未读  True 已读
     status = models.BooleanField(default=False)

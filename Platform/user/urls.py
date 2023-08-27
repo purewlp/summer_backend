@@ -11,4 +11,5 @@ urlpatterns=[
     path('uploadavatar',uploadAvatar),
     path('showinfo',showInfo),
     path('search',search),
+    path('isManager', isManager),
 ]
