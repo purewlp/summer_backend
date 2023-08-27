@@ -5,7 +5,7 @@ from Platform import settings
 from message.models import Message, UserMessage
 from django.http import JsonResponse
 # Create your views here.
-
+from chat.models import UserRoom,Room
 def test(request):
     if request.method=='POST':
         # user1=User.objects.get(username='test1')
@@ -103,7 +103,9 @@ def receive(request):
         teamID=request.POST.get('team_id')
         user=User.objects.get(id=id)
         team=Team.objects.get(id=teamID)
+        room = Room.objects.get(team=team)
         Membership.objects.create(user=user,team=team,role=RoleEnum.MEMBER.value)
+        UserRoom.objects.create(user=user,room=room)
         invitation=Invitation.objects.filter(recipient=user,team=team)
         invitation.delete()
         return JsonResponse({'errno':0,'msg':"您已接受团队邀请，成为"+team.name+"的一员"})

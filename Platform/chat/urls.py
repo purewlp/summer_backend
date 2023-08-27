@@ -8,4 +8,6 @@ urlpatterns = [
     path('file/', views.FileView.as_view()),
     path('doc/', views.DocView.as_view()),
     path('doc/list/', views.DocListView.as_view()),
+    path('invate/', views.Invite.as_view()),
+
 ]
