@@ -139,6 +139,8 @@ def uploadAvatar(request):
             os.remove(user.avatar.path)
         user.avatar=avatar
         user.save()
+        user.avatar_url='http://43.143.140.26'+user.avatar.url
+        user.save()
         return JsonResponse({'errno':0,'msg':"上传成功"})
     else:
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
@@ -148,7 +150,7 @@ def showInfo(request):
         id=request.GET.get('id')
         user=User.objects.get(id=id)
         if user.avatar:
-            avatar_url=user.avatar.url
+            avatar_url=user.avatar_url
         else:
             avatar_url=''
         userdata={
@@ -173,7 +175,7 @@ def search(request):
         search_list=[]
         for user in users:
             if user.avatar:
-                avatar_url=user.avatar.url
+                avatar_url=user.avatar_url
             else:
                 avatar_url=''
             userdata={
