@@ -200,3 +200,4 @@ class DocListView(View):
             'docs': res_docs
         }
         return HttpResponse(json.dumps(res), status=200, content_type='application/json')
+
