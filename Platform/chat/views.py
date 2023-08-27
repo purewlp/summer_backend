@@ -118,7 +118,8 @@ class RoomList(View):
             rooms = {
                 'roomName': str(userRoom.room.name),
                 'roomId': str(userRoom.room.id),
-                'team': str(userRoom.room.team)
+                'team': str(userRoom.room.team),
+                'headImg':"/home/ubuntu/media/avatars/user/userID_1_AR.jpg"
             }
         return HttpResponse(json.dumps(rooms), content_type='application/json', status=200)
 
