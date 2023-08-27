@@ -12,6 +12,7 @@ urlpatterns=[
     path('deleteagain',deleteAgain),
     path('finish',finish),
     path('collect',collect),
+    path('discollect',discollect),
     path('collectlist/',collectList),
     
 ]

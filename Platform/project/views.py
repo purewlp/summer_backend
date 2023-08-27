@@ -188,6 +188,17 @@ def collect(request):
     else:
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
 
+def discollect(request):
+    if request.method == 'POST':
+        id=request.POST.get('id')
+        teamID=request.POST.get('team_id')
+        projectID=request.POST.get('project_id')
+        collection=Collection.objects.get(project_id=projectID)
+        collection.delete()
+        return JsonResponse({'errno':0,'msg':"取消收藏成功"})
+    else:
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+
 def collectList(request):
     if request.method == 'GET':
         teamID=request.GET.get('team_id')

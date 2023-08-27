@@ -3,7 +3,7 @@ from user.models import User, VerificationCode_info
 from django.core.mail import send_mail, EmailMessage
 from django.utils import timezone
 from Platform import settings
-from django.db.models import F
+from django.db.models import F,Q
 import random
 import os
 # Create your views here.
@@ -158,5 +158,29 @@ def showInfo(request):
             'avatar_url':avatar_url
         }
         return JsonResponse(userdata)
+    else:
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+
+def search(request):
+    if request.method == 'POST':
+        info=request.POST.get('info')
+        users=User.objects.filter(Q(nickname__icontains=info)
+        |Q(id__icontains=info) |Q(realname__icontains=info))
+        search_list=[]
+        for user in users:
+            if user.avatar:
+                avatar_url=user.avatar.url
+            else:
+                avatar_url=''
+            userdata={
+                'id':user.id,
+                # 'username':user.username,
+                'email':user.email,
+                'nickname':user.nickname,
+                'realname':user.realname,
+                'avatar_url':avatar_url
+            }
+            search_list.append(userdata)
+        return JsonResponse({'search_list':search_list})
     else:
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})

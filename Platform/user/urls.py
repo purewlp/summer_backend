@@ -10,4 +10,5 @@ urlpatterns=[
     path('changenickname',changeNickname),
     path('uploadavatar',uploadAvatar),
     path('showinfo',showInfo),
+    path('search',search),
 ]

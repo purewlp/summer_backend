@@ -203,3 +203,21 @@ def changeTeam(request):
         return JsonResponse({'errno':0,'members':member_list})
     else:
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+
+def showDetail(request):
+    if request.method == 'GET':
+        teamID=request.GET.get('team_id')
+        team=Team.objects.get(id=teamID)
+        name=team.name
+        creator_id=team.creator_id
+        creator=User.objects.get(id=creator_id)
+        member=Membership.objects.filter(team_id=teamID)
+        num=member.count()
+        team_info={
+            'creator_id':creator_id,
+            'creator_name':creator.nickname,
+            'team_name':name,
+            'num':num,
+        }
+        return JsonResponse({'errno':0,'team_info':team_info})
+    return JsonResponse({'errno':1001,'meg':"请求方式错误"})

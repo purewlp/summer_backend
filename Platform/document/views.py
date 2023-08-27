@@ -98,3 +98,4 @@ def detail(request):
     else :
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
 
+# def 
