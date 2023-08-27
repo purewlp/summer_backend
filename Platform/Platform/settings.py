@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'project',
     'document',
     'prototype',
+    'chat',
 ]
 
 MIDDLEWARE = [
