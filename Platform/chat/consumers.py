@@ -58,9 +58,9 @@ class ChatConsumer(WebsocketConsumer):
                     'authorId': str(userId),
                     'type': 'image',
                     'authorName': str(user.nickname),
-                    'avatar': 'chat/media/' + str(user.avatar),
+                    'avatar': 'media/' + str(user.avatar),
                     'time': str(chatMessage.sentTime.strftime("%Y-%m-%d %H:%M:%S")),
-                    'image': 'chat/media/' + str(chatMessage.image),
+                    'image': 'media/' + str(chatMessage.image),
                     'content': '',
                     'file': '',
                     'fileName': str(chatMessage.image).split("/")[len(str(chatMessage.image).split("/")) - 1]
@@ -83,11 +83,11 @@ class ChatConsumer(WebsocketConsumer):
                     'author_id': str(userId),
                     'type': 'file',
                     'authorName': str(user.nickname),
-                    'avatar': 'chat/media/' + str(user.avatar),
+                    'avatar': 'media/' + str(user.avatar),
                     'time': str(chatMessage.sentTime.strftime("%Y-%m-%d %H:%M:%S")),
                     'image': '',
                     'content': '',
-                    'file': 'chat/media/' + str(chatMessage.file),
+                    'file': 'media/' + str(chatMessage.file),
                     'fileName': str(chatMessage.file).split("/")[len(str(chatMessage.file).split("/")) - 1]
                 }
                 connect.send(json.dumps(ret_dit))
@@ -106,7 +106,7 @@ class ChatConsumer(WebsocketConsumer):
                     'authorId': str(userId),
                     'type': 'text',
                     'authorName': str(user.nickname),
-                    'avatar': 'chat/media/' + str(user.avatar),
+                    'avatar': 'media/' + str(user.avatar),
                     'time': str(chatMessage.sentTime.strftime("%Y-%m-%d %H:%M:%S")),
                     'image': '',
                     'content': text,
@@ -129,7 +129,7 @@ class ChatConsumer(WebsocketConsumer):
                     'authorId': str(userId),
                     'type': 'emoji',
                     'authorName': str(user.nickname),
-                    'avatar': 'chat/media/' + str(user.avatar),
+                    'avatar': 'media/' + str(user.avatar),
                     'time': str(chatMessage.sentTime.strftime("%Y-%m-%d %H:%M:%S")),
                     'image': '',
                     'content': text,

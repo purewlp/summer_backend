@@ -48,7 +48,7 @@ class RoomView(View):
 class MessageView(View):
     # 聊天室历史消息
 
-    def get(self, request: HttpRequest):
+    def post(self, request: HttpRequest):
 
         try:
             roomId = request.POST.get('roomId')
@@ -68,7 +68,7 @@ class MessageView(View):
         }
         for message in ChatMessage.objects.filter(room=room):
             if message.isImage:
-                image = 'chat/media/' + str(message.image)
+                image = 'media/' + str(message.image)
                 content = ''
                 file = ''
                 fileName = str(image).split("/")[len(str(image).split("/")) - 1]
@@ -83,7 +83,7 @@ class MessageView(View):
                 else:
                     content = ''
                     image = ''
-                    file = 'chat/media/' + str(message.file)
+                    file = 'media/' + str(message.file)
                     fileName = str(file).split("/")[len(str(file).split("/")) - 1]
                     type = 'file'
             sub_ans = {
@@ -92,7 +92,7 @@ class MessageView(View):
                 "type": str(type),
                 "content": str(content),
                 "authorName": str(message.auther.nickname),
-                "avatar": 'chat/media/' + str(message.auther.avatar),
+                "avatar": 'media/' + str(message.auther.avatar),
                 "time": str(message.sentTime.strftime("%Y-%m-%d %H:%M:%S")),
                 "image": str(image),
                 "file": str(file),
@@ -113,14 +113,16 @@ class RoomList(View):
         except:
             return HttpResponse(status=400)
 
-        userRooms = UserRoom.objects.filter(user=user)
+        userRooms = UserRoom.objects.filter(user=userId)
+        rooms=[]
         for userRoom in userRooms:
-            rooms = {
+            room = {
                 'roomName': str(userRoom.room.name),
                 'roomId': str(userRoom.room.id),
                 'team': str(userRoom.room.team),
-                'headImg':"/home/ubuntu/media/avatars/user/userID_1_AR.jpg"
+                'headImg':"https://img.tukuppt.com/png_preview/00/20/28/fx9u9sca37.jpg!/fw/780"
             }
+            rooms.append(room)
         return HttpResponse(json.dumps(rooms), content_type='application/json', status=200)
 
 
@@ -133,7 +135,7 @@ class FileView(View):
             return HttpResponse(status=400)
         message = ChatMessage.objects.get(id=messageId)
         if message.isImage:
-            filePath = 'chat/media/' + str(message.image)
+            filePath = 'media/' + str(message.image)
             try:
                 file = open(filePath, 'rb')
             except:
@@ -143,7 +145,7 @@ class FileView(View):
             response['Content-Disposition'] = 'attachment'
             return response
         else:
-            filePath = 'chat/media/' + str(message.file)
+            filePath = 'media/' + str(message.file)
             try:
                 file = open(filePath, 'rb')
             except:
