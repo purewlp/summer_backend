@@ -4,6 +4,7 @@ from .views import *
 urlpatterns = [
     path('message', message),
     path('readMessage', readMessage),
+    path('sendMessage', sendMessage),
     path('deleteMessage', deleteMessage),
     path('changeMessage', changeMessage),
     path('deleteAllMessage', deleteAllMessage),
