@@ -73,3 +73,5 @@ class Collection(models.Model):
             else:
                 self.id = 1
         super().save(*args,**kwargs)
+
+
