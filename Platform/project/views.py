@@ -81,17 +81,19 @@ def list(request):
             user=User.objects.get(id=project.creator_id)
             if project.finished is True:
                 finished='已归档'
+                finished_time=project.finished_time.strftime("%Y-%m-%d %H:%M:%S")
             else :
                 finished='未归档'
+                finished_time=''
             if project.deleted is False:
                 project_data={
                     'project_id':project.id,
                     'project_name':project.name,
                     'user_id':user.id,
                     'user_nickname':user.nickname,
-                    'created_time':project.created_time,
+                    'created_time':project.created_time.strftime("%Y-%m-%d %H:%M:%S"),
                     'finished':finished,
-                    'finished_time':project.finished_time,
+                    'finished_time':finished_time,
                     'isEditing':False,
                     'newName':'',
                 }
@@ -110,20 +112,22 @@ def binList(request):
             deleter=User.objects.get(id=project.deleter_id)
             if project.finished is True:
                 finished='已归档'
+                finished_time=project.finished_time.strftime("%Y-%m-%d %H:%M:%S")
             else :
                 finished='未归档'
+                finished_time=''
             project_data={
                 'project_id':project.project_id,
                 'project_name':project.name,
                 'creator_id':creator.id,
                 'creator_nickname':creator.nickname,
-                'created_time':project.created_time,
+                'created_time':project.created_time.strftime("%Y-%m-%d %H:%M:%S"),
                 'deleter_id':deleter.id,
-                'deleted_time':project.deleted_time,
-                'expiration_time':project.expiration_time,
+                'deleted_time':project.deleted_time.strftime("%Y-%m-%d %H:%M:%S"),
+                'expiration_time':project.expiration_time.strftime("%Y-%m-%d %H:%M:%S"),
                 'deleter_nickname':deleter.nickname,
                 'finished':finished,
-                'finished_time':project.finished_time,
+                'finished_time':finished_time,
                 'isEditing':False,
                 'newName':'',
             }
@@ -142,15 +146,17 @@ def ownList(request):
             user=User.objects.get(id=project.creator_id)
             if project.finished is True:
                 finished='已归档'
+                finished_time=project.finished_time.strftime("%Y-%m-%d %H:%M:%S")
             else :
                 finished='未归档'
+                finished_time=''
             if project.deleted is False:
                 project_data={
                     'project_id':project.id,
                     'project_name':project.name,
-                    'created_time':project.created_time,
+                    'created_time':project.created_time.strftime("%Y-%m-%d %H:%M:%S"),
                     'finished':finished,
-                    'finished_time':project.finished_time,
+                    'finished_time':finished_time,
                     'isEditing':False,
                     'newName':'',
                 }
@@ -187,7 +193,7 @@ def collect(request):
         id=request.POST.get('id')
         teamID=request.POST.get('team_id')
         projectID=request.POST.get('project_id')
-        info=Collection.objects.filter(project_id=projectID)
+        info=Collection.objects.filter(user_id=id,project_id=projectID)
         if info:
             return JsonResponse({'errno':1002,'msg':"您已收藏该项目"})
         user=User.objects.get(id=id)
@@ -219,17 +225,19 @@ def collectList(request):
             user=User.objects.get(id=project.creator_id)
             if project.finished is True:
                 finished='已归档'
+                finished_time=project.finished_time.strftime("%Y-%m-%d %H:%M:%S")
             else :
                 finished='未归档'
+                finished_time=''
             if project.deleted is False:
                 project_data={
                     'project_id':project.id,
                     'project_name':project.name,
                     'user_id':user.id,
                     'user_nickname':user.nickname,
-                    'created_time':project.created_time,
+                    'created_time':project.created_time.strftime("%Y-%m-%d %H:%M:%S"),
                     'finished':finished,
-                    'finished_time':project.finished_time,
+                    'finished_time':finished_time,
                     'isEditing':False,
                     'newName':'',
                 }
