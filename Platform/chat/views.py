@@ -47,9 +47,7 @@ class RoomView(View):
 
 class MessageView(View):
     # 聊天室历史消息
-
     def post(self, request: HttpRequest):
-
         try:
             roomId = request.POST.get('roomId')
             userId = request.POST.get('userId')
