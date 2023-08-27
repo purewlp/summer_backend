@@ -144,8 +144,8 @@ def uploadAvatar(request):
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
 
 def showInfo(request):
-    if request.method == 'POST':
-        id=request.POST.get('id')
+    if request.method == 'GET':
+        id=request.GET.get('id')
         user=User.objects.get(id=id)
         if user.avatar:
             avatar_url=user.avatar.url
@@ -158,7 +158,8 @@ def showInfo(request):
             'email':user.email,
             'nickname':user.nickname,
             'realname':user.realname,
-            'avatar_url':avatar_url
+            'avatar_url':avatar_url,
+            'id': id
         }
         return JsonResponse(userdata)
     else:

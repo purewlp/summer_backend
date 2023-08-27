@@ -12,6 +12,7 @@ class User(models.Model):
         # 生成以用户ID命名的子目录，确保文件名不会冲突
         return f'avatars/user/userID_{instance.id}_{filename}'
     avatar=models.ImageField("avatar",upload_to=user_directory_path,null=True,blank=True)
+    # avatar_url=models.
     def save(self, *args, **kwargs):
         if self.id is None:
             # 如果 ID 为空，为其分配一个从 1 开始的值

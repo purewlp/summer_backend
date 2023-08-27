@@ -35,7 +35,8 @@ def deleteProject(request):
         ProjectRecycleBin.objects.create(name=project.name,deleter_id=deleter.id,
         creator_id=creator.id,team=team,project_id=projectID,created_time=project.created_time,
         finished=project.finished,finished_time=project.finished_time)
-        project.delete()
+        project.deleted=True
+        project.save()
         return JsonResponse({'errno':0,'msg':"成功删除项目"})
     else :
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
@@ -49,9 +50,13 @@ def recoverProject(request):
         teamID=project.team_id
         creator=User.objects.get(id=id)
         team=Team.objects.get(id=teamID)
-        Project.objects.create(creator=creator,team=team,name=name,id=projectID,
-        created_time=project.created_time,finished=project.finished,finished_time=project.finished_time)
+
+        # Project.objects.create(creator=creator,team=team,name=name,id=projectID,
+        # created_time=project.created_time,finished=project.finished,finished_time=project.finished_time)
         project.delete()
+        project=Project.objects.get(id=projectID)
+        project.deleted = False
+        project.save()
         return JsonResponse({'errno':0,'msg':"恢复成功"})
     else:
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
@@ -78,18 +83,19 @@ def list(request):
                 finished='已归档'
             else :
                 finished='未归档'
-            project_data={
-                'project_id':project.id,
-                'project_name':project.name,
-                'user_id':user.id,
-                'user_nickname':user.nickname,
-                'created_time':project.created_time,
-                'finished':finished,
-                'finished_time':project.finished_time,
-                'isEditing':False,
-                'newName':'',
-            }
-            project_list.append(project_data)
+            if project.deleted is False:
+                project_data={
+                    'project_id':project.id,
+                    'project_name':project.name,
+                    'user_id':user.id,
+                    'user_nickname':user.nickname,
+                    'created_time':project.created_time,
+                    'finished':finished,
+                    'finished_time':project.finished_time,
+                    'isEditing':False,
+                    'newName':'',
+                }
+                project_list.append(project_data)
         return JsonResponse({'errno':0,'project_list':project_list})
     else:
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
@@ -138,16 +144,17 @@ def ownList(request):
                 finished='已归档'
             else :
                 finished='未归档'
-            project_data={
-                'project_id':project.id,
-                'project_name':project.name,
-                'created_time':project.created_time,
-                'finished':finished,
-                'finished_time':project.finished_time,
-                'isEditing':False,
-                'newName':'',
-            }
-            project_list.append(project_data)
+            if project.deleted is False:
+                project_data={
+                    'project_id':project.id,
+                    'project_name':project.name,
+                    'created_time':project.created_time,
+                    'finished':finished,
+                    'finished_time':project.finished_time,
+                    'isEditing':False,
+                    'newName':'',
+                }
+                project_list.append(project_data)
         return JsonResponse({'errno':0,'project_list':project_list})
     else:
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
@@ -155,7 +162,9 @@ def ownList(request):
 def deleteAgain(request):
     if request.method == 'POST':
         projectID=request.POST.get('project_id')
-        project=ProjectRecycleBin.objects.get(id=projectID)
+        project=ProjectRecycleBin.objects.get(project_id=projectID)
+        project.delete()
+        project=Project.objects.get(project_id=projectID)
         project.delete()
         return JsonResponse({'errno':0,'msg':"项目已彻底删除"})
     else :
@@ -212,18 +221,22 @@ def collectList(request):
                 finished='已归档'
             else :
                 finished='未归档'
-            project_data={
-                'project_id':project.id,
-                'project_name':project.name,
-                'user_id':user.id,
-                'user_nickname':user.nickname,
-                'created_time':project.created_time,
-                'finished':finished,
-                'finished_time':project.finished_time,
-                'isEditing':False,
-                'newName':'',
-            }
-            project_list.append(project_data)
+            if project.deleted is False:
+                project_data={
+                    'project_id':project.id,
+                    'project_name':project.name,
+                    'user_id':user.id,
+                    'user_nickname':user.nickname,
+                    'created_time':project.created_time,
+                    'finished':finished,
+                    'finished_time':project.finished_time,
+                    'isEditing':False,
+                    'newName':'',
+                }
+                project_list.append(project_data)
         return JsonResponse({'errno':0,'project_list':project_list})
     else:
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+
+# def search(request):
+    

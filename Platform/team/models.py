@@ -13,13 +13,19 @@ class Team(models.Model):
     name=models.CharField(max_length=100)
     creator=models.ForeignKey(User,on_delete=models.CASCADE,related_name='teams_created')
     members = models.ManyToManyField(User,through='Membership')
-
+    def team_directory_path(instance,filename):
+        return f'avatars/team/teamID_{instance.id}_{filename}'
+    avatar=models.ImageField("avatar",upload_to=team_directory_path,null=True,blank=True)
+    avatar_url=models.CharField(max_length=255,null=True)
     def __str__(self):
         return self.name
     def save(self, *args, **kwargs):
+        # if self.avatar:
+        #     self.avatar_url='http://43.143.140.26'+self.avatar.upload_to
         if self.id is None:
             # 如果 ID 为空，为其分配一个从 1 开始的值
             last_team = Team.objects.order_by('-id').first()
+            
             if last_team:
                 self.id = last_team.id + 1
             else:
@@ -27,9 +33,9 @@ class Team(models.Model):
 
         super().save(*args, **kwargs)
 
-        if self.id is not None:
-            # 创建 Team 成功后，创建相应的 Membership 记录
-            Membership.objects.create(user=self.creator, team=self, role=RoleEnum.CREATOR.value)
+        # if self.id is not None:
+        #     # 创建 Team 成功后，创建相应的 Membership 记录
+        #     Membership.objects.create(user=self.creator, team=self, role=RoleEnum.CREATOR.value)
     class Meta:
         db_table='team'
 
