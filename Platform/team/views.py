@@ -1,6 +1,7 @@
 from user.models import User
 from team.models import Team,Membership,RoleEnum,Invitation
 from Platform import settings
+from message.models import Message, UserMessage
 from django.http import JsonResponse
 # Create your views here.
 
@@ -28,9 +29,13 @@ def createTeam(request):
         user=User.objects.get(id=id)
         teamname=request.POST.get('teamname')
         team=Team.objects.filter(name=teamname)
+        avatar=request.FILES['avatar']
         if team:
             return JsonResponse({'errno':1002,'msg':"团队名称重复，请更换"})
-        newteam=Team.objects.create(name=teamname,creator=user)
+        newteam=Team.objects.create(name=teamname,creator=user,avatar=avatar)
+        newteam.avatar_url='http://43.143.140.26'+newteam.avatar.url
+        newteam.save()
+        Membership.objects.create(user=user, team=newteam, role=RoleEnum.CREATOR.value)
         return JsonResponse({'errno':0,'msg':'恭喜你创建成功'})
     else:
         return JsonResponse({'errno':1001,'msg':'请求方式错误'})
@@ -166,10 +171,15 @@ def teamList(request):
             teamID=member.team_id
             team=Team.objects.get(id=teamID)
             role=Membership.objects.get(user_id=id,team_id=teamID).role
+            if team.avatar:
+                avatar_url='http://43.143.140.26'+ team.avatar.url
+            else:
+                avatar_url=''
             member_data={
                 "team_id":teamID,
                 "teamname":team.name,
-                "role":role
+                "role":role,
+                "avatar":team.avatar_url
             }
             member_list.append(member_data)
         return JsonResponse({'errno':0,'teams':member_list})
@@ -187,7 +197,7 @@ def changeTeam(request):
             id=member.user_id
             user=User.objects.get(id=id)
             if user.avatar:
-                avatar_url=user.avatar.url
+                avatar_url='http://43.143.140.26'+ user.avatar.url
             else:
                 avatar_url=''
             member_data={
@@ -213,10 +223,15 @@ def showDetail(request):
         creator=User.objects.get(id=creator_id)
         member=Membership.objects.filter(team_id=teamID)
         num=member.count()
+        if team.avatar:
+            avatar_url='http://43.143.140.26'+ team.avatar.url
+        else:
+            avatar_url=''
         team_info={
             'creator_id':creator_id,
             'creator_name':creator.nickname,
             'team_name':name,
+            'avatar':team.avatar_url,
             'num':num,
         }
         return JsonResponse({'errno':0,'team_info':team_info})
