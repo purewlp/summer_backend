@@ -73,6 +73,7 @@ def deletePrototype(request):
         try:
             prototype = Prototype.objects.get(id=prototypeID)
             prototype.delete()
+            return JsonResponse({'errno': 0})
         except:
             return JsonResponse({'errno': 1002})
 
@@ -81,15 +82,24 @@ def deletePrototype(request):
 
 
 def getDesign(request):
-    if request.method == 'POST':
-        projectID = request.POST.get('projectID')
+    if request.method == 'GET':
+        projectID = request.GET.get('projectID')
         try:
             project = Project(id=projectID)
-            prototypes = ProjectPrototype.objects.filter(project=project)
+            project_prototypes = ProjectPrototype.objects.filter(project=project)
+            prototypes = []
+            for project_prototype in project_prototypes:
+                prototype = project_prototype.prototype
+                prototypes.append({
+                    'prototypeID': prototype.id,
+                    'title': prototype.title
+                })
+            return JsonResponse({'errno': 0, 'prototypes': prototypes})
         except:
             return JsonResponse({'errno': 1001})
 
-
+    else:
+        return JsonResponse({'errno': 1001})
 
 
 
