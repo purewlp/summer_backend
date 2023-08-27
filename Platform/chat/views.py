@@ -48,7 +48,7 @@ class RoomView(View):
 class MessageView(View):
     # 聊天室历史消息
 
-    def get(self, request: HttpRequest):
+    def post(self, request: HttpRequest):
 
         try:
             roomId = request.POST.get('roomId')
@@ -113,14 +113,16 @@ class RoomList(View):
         except:
             return HttpResponse(status=400)
 
-        userRooms = UserRoom.objects.filter(user=user)
+        userRooms = UserRoom.objects.filter(user=userId)
+        rooms=[]
         for userRoom in userRooms:
-            rooms = {
+            room = {
                 'roomName': str(userRoom.room.name),
                 'roomId': str(userRoom.room.id),
                 'team': str(userRoom.room.team),
-                'headImg':"/home/ubuntu/media/avatars/user/userID_1_AR.jpg"
+                'headImg':"https://img.tukuppt.com/png_preview/00/20/28/fx9u9sca37.jpg!/fw/780"
             }
+            rooms.append(room)
         return HttpResponse(json.dumps(rooms), content_type='application/json', status=200)
 
 
