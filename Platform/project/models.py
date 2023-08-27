@@ -42,7 +42,7 @@ class ProjectRecycleBin(models.Model):
     deleted_time=models.DateTimeField(auto_now_add=True,null=True)
     expiration_time=models.DateTimeField(null=True)
     def save(self, *args, **kwargs):
-        # 如果项目ID尚未分配，分配一个从10001开始的唯一项目ID
+        # 如果项目ID尚未分配，分配一个从1开始的唯一项目ID
         if self.deleted_time is None:
             self.deleted_time = timezone.now()
         if not self.expiration_time:
@@ -52,7 +52,7 @@ class ProjectRecycleBin(models.Model):
             if last_project:
                 self.id = last_project.id + 1
             else:
-                self.id = 10001
+                self.id = 1
         super().save(*args,**kwargs)
 
     def __str__(self):

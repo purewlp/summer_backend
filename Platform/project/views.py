@@ -107,7 +107,7 @@ def binList(request):
             else :
                 finished='未归档'
             project_data={
-                'project_id':project.id,
+                'project_id':project.project_id,
                 'project_name':project.name,
                 'creator_id':creator.id,
                 'creator_nickname':creator.nickname,
