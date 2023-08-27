@@ -63,8 +63,11 @@ class MessageView(View):
             return HttpResponse(status=404)
 
         # 返回信息
+        memberShip = Membership.objects.get(user=user,team=room.team)
+        permission =memberShip.role
         ans = {
-            "messages": []
+            "messages": [],
+            "permission": permission
         }
         for message in ChatMessage.objects.filter(room=room):
             if message.isImage:
