@@ -1,3 +1,4 @@
+from message.models import Message, UserMessage
 from user.models import User
 from team.models import Team,Membership,RoleEnum,Invitation
 from Platform import settings
@@ -80,8 +81,13 @@ def invite(request):
         team=Team.objects.get(id=teamID)
         inviter=User.objects.get(id=id1)
         invitation=Invitation.objects.filter(recipient=user,team=team,inviter=inviter)
+
+
         if not invitation:
-            Invitation.objects.create(recipient=user,team=team,inviter=inviter)
+            invitation = Invitation.objects.create(recipient=user,team=team,inviter=inviter)
+            message = Message(content=team.name+"团队邀请", isInvited=True, publisher=user.nickname, invitation=invitation)
+            message.save()
+            UserMessage(user=user, message=message).save()
         return JsonResponse({'errno':0,'msg':"您已成功发出邀请"})
     else:
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
