@@ -13,6 +13,11 @@ def create(request):
         projectID=request.POST.get('project_id')
         id=request.POST.get('id') 
         name=request.POST.get('name')
+        if not name:
+            name='新建文档'
+        document=Document.objects.filter(name=name)
+        if document:
+            return JsonResponse({'errno':1002,'msg':"名称重复，请重新输入"})
         project=Project.objects.get(id=projectID)
         user=User.objects.get(id=id)
         document=Document(project=project,creator=user,name=name)
@@ -28,6 +33,9 @@ def save(request):
         documentID=request.POST.get('document_id')
         name=request.POST.get('name')
         content=request.POST.get('content')
+        document=Document.objects.filter(name=name)
+        if document:
+            return JsonResponse({'errno':1002,'msg':"名称重复，请重新输入"})
         document=Document.objects.get(id=documentID)
         document.name=name
         document.content=content
@@ -67,15 +75,26 @@ def list(request):
     else:
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
 
-# def detail(request):
-#     if request.method == 'GET':
-#         documentID=request.GET.get('document_id')
-#         document=Document.objects.get(id=documentID)
-#         document_info={
-#             'name':document.name,
-#             'content':document.content,
-#         }
-#         projectID=document.project_id
-#         teamID=Project.objects.get(projectID).team_id
-#         member_list=[]
-#         members=Membership.objects.filter(team_id=teamID)
+def detail(request):
+    if request.method == 'GET':
+        documentID=request.GET.get('document_id')
+        document=Document.objects.get(id=documentID)
+        document_info={
+            'name':document.name,
+            'content':document.content,
+        }
+        projectID=document.project_id
+        teamID=Project.objects.get(id=projectID).team_id
+        member_list=[]
+        members=Membership.objects.filter(team_id=teamID)
+        for member in members:
+            user=User.objects.get(id=member.user_id)
+            member_data={
+                'user_id':user.id,
+                'nickname':user.nickname,
+            }
+            member_list.append(member_data)
+        return JsonResponse({'errno':0,'document_info':document_info,'member_list':member_list})
+    else :
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+
