@@ -10,39 +10,7 @@ from team.models import Team, Membership
 from chat.models import Room, ChatMessage, UserRoom, Document
 
 
-class RoomView(View):
-    # 创建聊天室
-    def post(self, request: HttpRequest):
-        try:
-            members = request.POST.get('members')
-            teamId = request.POST.get('teamId')
-            roomName = request.POST.get('roomName')
-            userId = request.POST.get('userId')
-        except:
-            return HttpResponse({"status":400})
 
-
-        try:
-            user = User.objects.get(id=int(userId))
-            team = Team.objects.get(id=int(teamId))
-        except:
-            return HttpResponse({"status":404})
-        roomName = str(roomName)
-        # 创建聊天室
-        if not Room.objects.filter(team=team):
-            room = Room.objects.create(team=team,name=roomName)
-        else:
-            return HttpResponse({"errno":"已存在房间"})
-        members = list(members)
-        for memberId in members:
-            if User.objects.filter(id=int(memberId)):
-                member = User.objects.get(id=int(memberId))
-                if not UserRoom.objects.filter(room=room, user=member):
-                    UserRoom.objects.create(room=room, user=member)
-        if not UserRoom.objects.filter(room=room, user=user):
-            UserRoom.objects.create(room=room, user=user)
-
-        return HttpResponse({"status":200})
 
 
 class MessageView(View):

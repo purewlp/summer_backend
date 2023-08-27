@@ -37,6 +37,8 @@ def createTeam(request):
         newteam.avatar_url='http://43.143.140.26'+newteam.avatar.url
         newteam.save()
         Membership.objects.create(user=user, team=newteam, role=RoleEnum.CREATOR.value)
+        room = Room.objects.create(team=newteam, name=newteam.name)
+        UserRoom.objects.create(room=room, user=user)
         return JsonResponse({'errno':0,'msg':'恭喜你创建成功'})
     else:
         return JsonResponse({'errno':1001,'msg':'请求方式错误'})
