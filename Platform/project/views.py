@@ -4,7 +4,7 @@ from project.models import Project,ProjectRecycleBin,Collection
 from Platform import settings
 from django.http import JsonResponse
 from django.utils import timezone
-
+from django.db.models import F,Q
 # Create your views here.
 def createProject(request):
     if request.method == 'POST':
@@ -238,5 +238,86 @@ def collectList(request):
     else:
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
 
-# def search(request):
-    
+def search(request):
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        user= User.objects.get(id=id)
+        team_id = request.POST.get('team_id')
+        team = Team.objects.get(id=team_id)
+        search_str = request.POST.get('search_str')
+        rank = request.POST.get('rank')
+        rank = int(rank)
+        if rank == 1 :
+            projects=Project.objects.filter(Q(name__icontains=search_str))
+            project_list = []
+            for project in projects:
+                if project.deleted is False:
+                    project_data = {
+                        'project_id': project.id,
+                        'project_name': project.name,
+                        'user_id': user.id,
+                        'user_nickname': user.nickname,
+                        'created_time': project.created_time,
+                        'finished': project.finished,
+                        'finished_time': project.finished_time,
+                        'isEditing': False,
+                        'newName': '',
+                    }
+                    project_list.append(project_data)
+            return JsonResponse({'errno': 0, 'project_list': project_list})
+        elif rank == 2 :
+            projects = Project.objects.filter(Q(name__icontains=search_str))
+            project_list = []
+            for project in projects:
+                if project.creator is user and project.deleted is False:
+                    project_data = {
+                        'project_id': project.id,
+                        'project_name': project.name,
+                        'user_id': user.id,
+                        'user_nickname': user.nickname,
+                        'created_time': project.created_time,
+                        'finished': project.finished,
+                        'finished_time': project.finished_time,
+                        'isEditing': False,
+                        'newName': '',
+                    }
+                    project_list.append(project_data)
+            return JsonResponse({'errno': 0, 'project_list': project_list})
+        elif rank == 3 :
+            projects = Project.objects.filter(Q(name__icontains=search_str))
+            project_list = []
+            for project in projects:
+                if project.deleted is False and Collection.objects.filter(user=user,team=team,project_id = project.id):
+                    project_data = {
+                        'project_id': project.id,
+                        'project_name': project.name,
+                        'user_id': user.id,
+                        'user_nickname': user.nickname,
+                        'created_time': project.created_time,
+                        'finished': project.finished,
+                        'finished_time': project.finished_time,
+                        'isEditing': False,
+                        'newName': '',
+                    }
+                    project_list.append(project_data)
+            return JsonResponse({'errno': 0, 'project_list': project_list})
+        elif rank ==4 :
+            projects = ProjectRecycleBin.objects.filter(Q(name__icontains=search_str))
+            project_list = []
+            for project in projects:
+                if project.team == team:
+                    project_data = {
+                        'project_id': project.id,
+                        'project_name': project.name,
+                        'user_id': user.id,
+                        'user_nickname': user.nickname,
+                        'created_time': project.created_time,
+                        'finished': project.finished,
+                        'finished_time': project.finished_time,
+                        'isEditing': False,
+                        'newName': '',
+                    }
+                    project_list.append(project_data)
+            return JsonResponse({'errno': 0, 'project_list': project_list})
+    else:
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})
