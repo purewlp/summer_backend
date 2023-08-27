@@ -9,4 +9,6 @@ urlpatterns = [
     path('changeMessage', changeMessage),
     path('deleteAllMessage', deleteAllMessage),
     path('changeAllMessage', changeAllMessage),
+    path('acceptinvitation', acceptInvitation),
+    path('rejectinvitation', rejectInvitation),
 ]

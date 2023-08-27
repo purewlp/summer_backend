@@ -1,4 +1,7 @@
 from django.http import JsonResponse
+
+from project.models import Project
+from team.models import Membership, RoleEnum
 from user.models import User, VerificationCode_info
 from django.core.mail import send_mail, EmailMessage
 from django.utils import timezone
@@ -185,3 +188,25 @@ def search(request):
         return JsonResponse({'search_list':search_list})
     else:
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+
+def isManager(request):
+    if request.method == 'POST':
+        userId = request.POST.get('userId')
+        projectId = request.POST.get('projectId')
+        try:
+            project = Project.objects.get(id=projectId)
+            team = project.team
+            role = Membership.objects.get(team_id=team.id, user_id=userId).role
+            if role == RoleEnum.MEMBER.value:
+                return JsonResponse({'errno': 1003, 'msg': "非管理员"})
+            else:
+                return JsonResponse({'errno': 0, 'msg': "管理员"})
+        except:
+            return JsonResponse({'errno': 1002, 'msg': "匹配错误"})
+
+    else:
+        return JsonResponse({'errno': 1001, 'msg': "请求方式错误"})
+
+
+
+

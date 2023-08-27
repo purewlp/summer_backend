@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 
 from message.models import UserMessage, Message
+from team.models import Membership, Team, RoleEnum
 from user.models import User
 
 
@@ -132,6 +133,31 @@ def sendMessage(request):
             return JsonResponse({'errno': 0})
         except:
             return JsonResponse({'errno': 1002})
+
+    else:
+        return JsonResponse({'errno': 1001})
+
+
+def acceptInvitation(request):
+    if request.method == 'POST':
+        team_id = request.POST.get('teamId')
+        user_id = request.POST.get('userId')
+        try:
+            team = Team.objects.get(id=team_id)
+            user = User.objects.get(id=user_id)
+            membership = Membership(user=user, team=team, role=RoleEnum.MEMBER.value)
+            membership.save()
+            return JsonResponse({'errno': 0})
+        except:
+            return JsonResponse({'errno': 1002})
+
+    else:
+        return JsonResponse({'errno': 1001})
+
+
+def rejectInvitation(request):
+    if request.method == 'POST':
+        return JsonResponse({'errno': 0})
 
     else:
         return JsonResponse({'errno': 1001})

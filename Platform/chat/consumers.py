@@ -41,7 +41,11 @@ class ChatConsumer(WebsocketConsumer):
             self.send("error: cannot find user or room!")
             return
         user = User.objects.get(id=userId)
-        dic = eval(message['text'])
+        try:
+            dic = json.loads(message['text'])
+        except json.JSONDecodeError as e:
+            self.send("格式错误")
+            return
         # 图片
         if 'image' in dic:
             image_base64 = str(dic['image']).split(",")[1]
