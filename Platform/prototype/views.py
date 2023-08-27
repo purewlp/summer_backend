@@ -94,7 +94,8 @@ def getDesign(request):
                     'prototypeID': prototype.id,
                     'title': prototype.title,
                     'isEditing': False,
-                    'newName': ''
+                    'newName': '',
+                    'hover': False
                 })
             return JsonResponse({'errno': 0, 'prototypes': prototypes})
         except:
