@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    'chat',
     'daphne',
     "django.contrib.staticfiles",
     'channels',
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     'project',
     'document',
     'chat',
+    'prototype',
 ]
 
 MIDDLEWARE = [

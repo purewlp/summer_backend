@@ -19,7 +19,7 @@ class ChatMessage(models.Model):
     file = models.FileField(upload_to='chatFile', null=True)
     auther = models.ForeignKey('user.User', on_delete=models.CASCADE)
     room = models.ForeignKey('chat.Room', on_delete=models.CASCADE)
-
+    isEmoji = models.BooleanField(default=False)
     class Meta:
         db_table = 'chatMessage'
 

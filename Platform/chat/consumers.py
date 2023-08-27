@@ -22,6 +22,7 @@ class ChatConsumer(WebsocketConsumer):
         userId = query_params.get(b'userId', [b''])[0].decode().split()[0]
         if userId is not None:
             if UserRoom.objects.filter(user__id=userId, room__id=roomId):
+                print(userId)
                 if roomId not in connect_list:
                     connect_list[roomId] = []
                 if self not in connect_list[roomId]:
@@ -56,7 +57,7 @@ class ChatConsumer(WebsocketConsumer):
                     "id": str(chatMessage.id),
                     'authorId': str(userId),
                     'type': 'image',
-                    'authorName': str(user.name),
+                    'authorName': str(user.nickname),
                     'avatar': 'chat/media/' + str(user.avatar),
                     'time': str(chatMessage.sentTime.strftime("%Y-%m-%d %H:%M:%S")),
                     'image': 'chat/media/' + str(chatMessage.image),
@@ -81,7 +82,7 @@ class ChatConsumer(WebsocketConsumer):
                     "id": str(chatMessage.id),
                     'author_id': str(userId),
                     'type': 'file',
-                    'author_name': str(user.name),
+                    'authorName': str(user.nickname),
                     'avatar': 'chat/media/' + str(user.avatar),
                     'time': str(chatMessage.sentTime.strftime("%Y-%m-%d %H:%M:%S")),
                     'image': '',
@@ -104,7 +105,30 @@ class ChatConsumer(WebsocketConsumer):
                     "id": str(chatMessage.id),
                     'authorId': str(userId),
                     'type': 'text',
-                    'authorName': str(user.realname),
+                    'authorName': str(user.nickname),
+                    'avatar': 'chat/media/' + str(user.avatar),
+                    'time': str(chatMessage.sentTime.strftime("%Y-%m-%d %H:%M:%S")),
+                    'image': '',
+                    'content': text,
+                    'file': '',
+                    'fileName': ''
+                }
+                connect.send(json.dumps(ret_dit))
+        elif 'emoji' in dic:
+            text = str(dic['emoji'])
+            chatMessage = ChatMessage.objects.create(
+                isImage=False,
+                isEmoji=True,
+                content=text,
+                auther=user,
+                room=Room.objects.get(id=roomId)
+            )
+            for connect in connect_list[roomId]:
+                ret_dit = {
+                    "id": str(chatMessage.id),
+                    'authorId': str(userId),
+                    'type': 'emoji',
+                    'authorName': str(user.nickname),
                     'avatar': 'chat/media/' + str(user.avatar),
                     'time': str(chatMessage.sentTime.strftime("%Y-%m-%d %H:%M:%S")),
                     'image': '',
@@ -121,7 +145,7 @@ class ChatConsumer(WebsocketConsumer):
                 connect.remove(self)
                 break
         raise StopConsumer()
-from django.shortcuts import render
+
 
 # Create your views here.
 
