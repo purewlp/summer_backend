@@ -2,6 +2,7 @@ from project.models import Project
 from team.models import Team,Membership
 from document.models import Document,DocumentVersion
 from user.models import User
+from message.models import Message,UserMessage
 from Platform import settings
 from django.http import JsonResponse
 from django.utils import timezone
@@ -98,4 +99,18 @@ def detail(request):
     else :
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
 
-# def 
+def remind(request):
+    if request.method == 'POST':
+        sendID=request.POST.get('send_id')
+        receiveID=request.POST.get('receive_id')
+        projectID=request.POST.get('project_id')
+        documentID=request.POST.get('document_id')
+        send=User.objects.get(id=sendID)
+        receive=User.objects.get(id=receiveID)
+        project=Project.objects.get(id=projectID)
+        document=Document.objects.get(id=documentID)
+        content=send.nickname+"在项目"+project.name+"的"+document.name+"文档中提到了你"
+        message=Message(content=content,publisher=send.nickname)
+        message.save()
+        user_message=UserMessage(user=receive,message=message)
+        user_message.save()

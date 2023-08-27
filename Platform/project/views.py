@@ -247,13 +247,13 @@ def collectList(request):
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
 
 def search(request):
-    if request.method == 'POST':
-        id = request.POST.get('id')
+    if request.method == 'GET':
+        id = request.GET.get('id')
         user= User.objects.get(id=id)
-        team_id = request.POST.get('team_id')
+        team_id = request.GET.get('team_id')
         team = Team.objects.get(id=team_id)
-        search_str = request.POST.get('search_str')
-        rank = request.POST.get('rank')
+        search_str = request.GET.get('search_str')
+        rank = request.GET.get('rank')
         rank = int(rank)
         if rank == 1 :
             projects=Project.objects.filter(Q(name__icontains=search_str))
