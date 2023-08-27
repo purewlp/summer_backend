@@ -108,10 +108,10 @@ TEMPLATES = [
 WSGI_APPLICATION = "Platform.wsgi.application"
 ASGI_APPLICATION = "Platform.asgi.application"
 
-STATIC_URL = '/document/static/'
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
+# STATIC_URL = '/document/static/'
+# STATICFILES_DIRS = (
+#     os.path.join(BASE_DIR, 'static'),
+# )
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
