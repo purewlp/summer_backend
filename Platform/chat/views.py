@@ -107,7 +107,7 @@ class MessageView(View):
 class RoomList(View):
     # 获取聊天室列表
 
-    def get(self, request: HttpRequest):
+    def post(self, request: HttpRequest):
         json_obj = json.loads(request.body)
         userId = json_obj['userId']
         try:
@@ -126,7 +126,7 @@ class RoomList(View):
 
 
 class FileView(View):
-    def get(self, request: HttpRequest):
+    def post(self, request: HttpRequest):
         try:
             messageId = request.GET['messageId']
         except:
@@ -205,7 +205,7 @@ class DocView(View):
 class DocListView(View):
 
 
-    def get(self, request: HttpRequest):
+    def post(self, request: HttpRequest):
         # 检验字段是否完整
         try:
             roomId = request.GET['roomId']
