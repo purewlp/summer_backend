@@ -114,6 +114,29 @@ class ChatConsumer(WebsocketConsumer):
                     'fileName': ''
                 }
                 connect.send(json.dumps(ret_dit))
+        elif 'emoji' in dic:
+            text = str(dic['emoji'])
+            chatMessage = ChatMessage.objects.create(
+                isImage=False,
+                isEmoji=True,
+                content=text,
+                auther=user,
+                room=Room.objects.get(id=roomId)
+            )
+            for connect in connect_list[roomId]:
+                ret_dit = {
+                    "id": str(chatMessage.id),
+                    'authorId': str(userId),
+                    'type': 'emoji',
+                    'authorName': str(user.nickname),
+                    'avatar': 'chat/media/' + str(user.avatar),
+                    'time': str(chatMessage.sentTime.strftime("%Y-%m-%d %H:%M:%S")),
+                    'image': '',
+                    'content': text,
+                    'file': '',
+                    'fileName': ''
+                }
+                connect.send(json.dumps(ret_dit))
 
     def websocket_disconnect(self, message):
         # 断开连接
@@ -122,7 +145,7 @@ class ChatConsumer(WebsocketConsumer):
                 connect.remove(self)
                 break
         raise StopConsumer()
-from django.shortcuts import render
+
 
 # Create your views here.
 
