@@ -1,3 +1,5 @@
+import re
+
 from django.http import JsonResponse
 from django.shortcuts import render
 
@@ -119,17 +121,25 @@ def changeAllMessage(request):
 
 def sendMessage(request):
     if request.method == 'POST':
-        groupId = request.POST.get('groupId')
-        userId = request.POST.get('userId')
+        groupId = request.POST.get('teamId')
+        # userId = request.POST.get('userId')
         content = request.POST.get('content')
         publiserId = request.POST.get('id')
 
         try:
-            user = User.objects.get(id=userId)
-            message = Message(content=content, publisher=publiserId)
-            message.save()
-            user_message = UserMessage(user=user, message=message)
-            user_message.save()
+            at = re.search(r'@.+\s', content).span()
+        except:
+            return JsonResponse({'errno': 1003})
+
+        nickname = content[at[0]+1:at[1]-1]
+
+        try:
+            users = User.objects.filter(nickname=nickname)
+            for user in users:
+                message = Message(content=content[0:at[0]]+content[at[1]:], publisher=User.objects.get(id=publiserId).nickname)
+                message.save()
+                user_message = UserMessage(user=user, message=message)
+                user_message.save()
             return JsonResponse({'errno': 0})
         except:
             return JsonResponse({'errno': 1002})
