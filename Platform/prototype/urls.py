@@ -7,4 +7,5 @@ urlpatterns = [
     path('setprototype', setPrototype),
     path('deleteprototype', deletePrototype),
     path('getdesign', getDesign),
+    path('rename', rename),
 ]

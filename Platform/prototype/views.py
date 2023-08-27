@@ -92,7 +92,9 @@ def getDesign(request):
                 prototype = project_prototype.prototype
                 prototypes.append({
                     'prototypeID': prototype.id,
-                    'title': prototype.title
+                    'title': prototype.title,
+                    'isEditing': False,
+                    'newName': ''
                 })
             return JsonResponse({'errno': 0, 'prototypes': prototypes})
         except:
@@ -100,6 +102,21 @@ def getDesign(request):
 
     else:
         return JsonResponse({'errno': 1001})
+
+def rename(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        id = request.POST.get('prototypeID')
+        try:
+            prototype = Prototype.objects.get(id=id)
+            prototype.title = title
+            prototype.save()
+            return JsonResponse({'errno': 0})
+        except:
+            return JsonResponse({'errno': 1001})
+
+    else:
+        return JsonResponse({'errno': 1002})
 
 
 
