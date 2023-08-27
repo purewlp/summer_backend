@@ -68,7 +68,7 @@ class MessageView(View):
         }
         for message in ChatMessage.objects.filter(room=room):
             if message.isImage:
-                image = 'chat/media/' + str(message.image)
+                image = 'media/' + str(message.image)
                 content = ''
                 file = ''
                 fileName = str(image).split("/")[len(str(image).split("/")) - 1]
@@ -83,7 +83,7 @@ class MessageView(View):
                 else:
                     content = ''
                     image = ''
-                    file = 'chat/media/' + str(message.file)
+                    file = 'media/' + str(message.file)
                     fileName = str(file).split("/")[len(str(file).split("/")) - 1]
                     type = 'file'
             sub_ans = {
@@ -92,7 +92,7 @@ class MessageView(View):
                 "type": str(type),
                 "content": str(content),
                 "authorName": str(message.auther.nickname),
-                "avatar": 'chat/media/' + str(message.auther.avatar),
+                "avatar": 'media/' + str(message.auther.avatar),
                 "time": str(message.sentTime.strftime("%Y-%m-%d %H:%M:%S")),
                 "image": str(image),
                 "file": str(file),
@@ -135,7 +135,7 @@ class FileView(View):
             return HttpResponse(status=400)
         message = ChatMessage.objects.get(id=messageId)
         if message.isImage:
-            filePath = 'chat/media/' + str(message.image)
+            filePath = 'media/' + str(message.image)
             try:
                 file = open(filePath, 'rb')
             except:
@@ -145,7 +145,7 @@ class FileView(View):
             response['Content-Disposition'] = 'attachment'
             return response
         else:
-            filePath = 'chat/media/' + str(message.file)
+            filePath = 'media/' + str(message.file)
             try:
                 file = open(filePath, 'rb')
             except:
