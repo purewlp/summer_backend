@@ -13,13 +13,11 @@ from chat.models import Room, ChatMessage, UserRoom, Document
 class RoomView(View):
     # 创建聊天室
     def post(self, request: HttpRequest):
-        json_obj = json.loads(request.body)
-        # 检验字段是否完整
         try:
-            members = json_obj['members']
-            teamId = json_obj['teamId']
-            roomName = json_obj['roomName']
-            userId = json_obj['userId']
+            members = request.POST.get('members')
+            teamId = request.POST.get('teamId')
+            roomName = request.POST.get('roomName')
+            userId = request.POST.get('userId')
         except:
             return HttpResponse({"status":400})
 
@@ -51,10 +49,10 @@ class MessageView(View):
     # 聊天室历史消息
 
     def get(self, request: HttpRequest):
-        json_obj = json.loads(request.body)
+
         try:
-            roomId = json_obj['roomId']
-            userId = json_obj['userId']
+            roomId = request.POST.get('roomId')
+            userId = request.POST.get('userId')
         except:
             return HttpResponse(status=400)
 
@@ -107,9 +105,9 @@ class MessageView(View):
 class RoomList(View):
     # 获取聊天室列表
 
-    def get(self, request: HttpRequest):
-        json_obj = json.loads(request.body)
-        userId = json_obj['userId']
+    def post(self, request: HttpRequest):
+
+        userId = request.POST.get('userId')
         try:
             user = User.objects.get(id=userId)
         except:
@@ -120,15 +118,17 @@ class RoomList(View):
             rooms = {
                 'roomName': str(userRoom.room.name),
                 'roomId': str(userRoom.room.id),
-                'team': str(userRoom.room.team)
+                'team': str(userRoom.room.team),
+                'headImg':"/home/ubuntu/media/avatars/user/userID_1_AR.jpg"
             }
         return HttpResponse(json.dumps(rooms), content_type='application/json', status=200)
 
 
 class FileView(View):
-    def get(self, request: HttpRequest):
+    def post(self, request: HttpRequest):
+
         try:
-            messageId = request.GET['messageId']
+            messageId = request.POST.get('roomId')
         except:
             return HttpResponse(status=400)
         message = ChatMessage.objects.get(id=messageId)
@@ -156,13 +156,12 @@ class FileView(View):
 
 class DocView(View):
     def post(self, request: HttpRequest):
-        json_obj = json.loads(request.body)
         # 检验字段是否完整
         try:
-            title = json_obj['title']
-            link = json_obj['link']
-            roomId = json_obj['roomId']
-            userId = json_obj['userId']
+            title = request.POST.get('title')
+            link = request.POST.get('link')
+            roomId = request.POST.get('roomId')
+            userId = request.POST.get('userId')
         except:
             return HttpResponse({"status":400})
 
@@ -205,10 +204,10 @@ class DocView(View):
 class DocListView(View):
 
 
-    def get(self, request: HttpRequest):
+    def post(self, request: HttpRequest):
         # 检验字段是否完整
         try:
-            roomId = request.GET['roomId']
+            roomId = request.POST.get('roomId')
         except:
             return HttpResponse({"status":400})
 
