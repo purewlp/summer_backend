@@ -84,7 +84,7 @@ class ChatConsumer(WebsocketConsumer):
             for connect in connect_list[roomId]:
                 ret_dit = {
                     "id": str(chatMessage.id),
-                    'author_id': str(userId),
+                    'authorId': str(userId),
                     'type': 'file',
                     'authorName': str(user.nickname),
                     'avatar': 'media/' + str(user.avatar),
