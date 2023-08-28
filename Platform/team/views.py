@@ -31,13 +31,14 @@ def createTeam(request):
         teamname=request.POST.get('teamname')
         team=Team.objects.filter(name=teamname)
         isavatar=request.POST.get('isavatar')
+        description=request.POST.get('description')
         if isavatar == '1':
             avatar=request.FILES['avatar']
         else:
             avatar=''
         if team:
             return JsonResponse({'errno':1002,'msg':"团队名称重复，请更换"})
-        newteam=Team.objects.create(name=teamname,creator=user,avatar=avatar)
+        newteam=Team.objects.create(name=teamname,creator=user,avatar=avatar,description=description)
         if avatar:
             newteam.avatar_url='http://43.143.140.26'+newteam.avatar.url
         newteam.save()
@@ -200,7 +201,8 @@ def teamList(request):
                 "team_id":teamID,
                 "teamname":team.name,
                 "role":role,
-                "avatar":team.avatar_url
+                "avatar":team.avatar_url,
+
             }
             member_list.append(member_data)
         return JsonResponse({'errno':0,'teams':member_list})
@@ -254,6 +256,7 @@ def showDetail(request):
             'team_name':name,
             'avatar':team.avatar_url,
             'num':num,
+            'description':team.description,
         }
         return JsonResponse({'errno':0,'team_info':team_info})
     return JsonResponse({'errno':1001,'meg':"请求方式错误"})

@@ -65,8 +65,8 @@ def sendcode(request):
         recipient_email = request.POST.get('email') # 从 POST 请求参数中获取收件人邮箱地址
         event=request.POST.get('event')
         username=request.POST.get('username')
-        if event==1:
-            user=User.objects.filter(username=username,email=email)
+        if event=="1":
+            user=User.objects.filter(username=username,email=recipient_email)
             if not user:
                 return JsonResponse({'errno':1003,'msg':"用户名与邮箱不匹配"})
         if recipient_email:

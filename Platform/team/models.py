@@ -17,6 +17,7 @@ class Team(models.Model):
         return f'avatars/team/teamID_{instance.id}_{filename}'
     avatar=models.ImageField("avatar",upload_to=team_directory_path,null=True,blank=True)
     avatar_url=models.CharField(max_length=255,null=True)
+    description=models.CharField(max_length=255,null=True)
     def __str__(self):
         return self.name
     def save(self, *args, **kwargs):
