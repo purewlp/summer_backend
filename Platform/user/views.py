@@ -62,7 +62,13 @@ def register(request):
 
 def sendcode(request):
     if request.method == 'POST':
-        recipient_email = request.POST.get('email')  # 从 POST 请求参数中获取收件人邮箱地址
+        recipient_email = request.POST.get('email') # 从 POST 请求参数中获取收件人邮箱地址
+        event=request.POST.get('event')
+        username=request.POST.get('username')
+        if event==1:
+            user=User.objects.filter(username=username,email=email)
+            if not user:
+                return JsonResponse({'errno':1003,'msg':"用户名与邮箱不匹配"})
         if recipient_email:
             verification_code = generate_verification_code()  # 生成验证码
             subject = '验证码'
@@ -208,6 +214,35 @@ def isManager(request):
 
     else:
         return JsonResponse({'errno': 1001, 'msg': "请求方式错误"})
+
+def forgetPassword(request):
+   
+    if request.method == 'POST':
+        username=request.POST.get('username')
+        password=request.POST.get('password')
+        verification_code=request.POST.get('verification_code')
+        email=request.POST.get('email')
+        if not verification_code:
+            return JsonResponse({'errno': 1002, 'msg': "请输入验证码！"})
+
+        verification_info=VerificationCode_info.objects.filter(email=email).first()
+        if not verification_info or verification_info.code != verification_code:
+            return JsonResponse({'errno': 1003, 'msg': "验证码无效！"})
+
+        current_time = timezone.now()
+        expiration_time = verification_info.expiration_time
+        if current_time > expiration_time:
+            return JsonResponse({'errno': 1004, 'msg': "验证码已过期！"})
+
+        del verification_info
+        user=User.objects.get(username=username)
+        user.password=password
+        user.save()
+        return JsonResponse({'errno':0,'msg':"成功修改密码"})
+    else:
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+
+
 
 
 

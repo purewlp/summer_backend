@@ -7,5 +7,6 @@ urlpatterns=[
     path('save',save),
     path('delete',delete),
     path('detail/',detail),
+    path('remind',remind),
 
 ]

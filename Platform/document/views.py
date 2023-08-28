@@ -16,9 +16,9 @@ def create(request):
         name=request.POST.get('name')
         if not name:
             name='新建文档'
-        document=Document.objects.filter(name=name)
-        if document:
-            return JsonResponse({'errno':1002,'msg':"名称重复，请重新输入"})
+        # document=Document.objects.filter(name=name,project_id=projectID)
+        # if document:
+        #     return JsonResponse({'errno':1002,'msg':"名称重复，请重新输入"})
         project=Project.objects.get(id=projectID)
         user=User.objects.get(id=id)
         document=Document(project=project,creator=user,name=name)
@@ -114,3 +114,6 @@ def remind(request):
         message.save()
         user_message=UserMessage(user=receive,message=message)
         user_message.save()
+        return JsonResponse({'errno':0,'msg':"@成功"})
+    else:
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})

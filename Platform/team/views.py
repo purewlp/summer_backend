@@ -30,11 +30,16 @@ def createTeam(request):
         user=User.objects.get(id=id)
         teamname=request.POST.get('teamname')
         team=Team.objects.filter(name=teamname)
-        avatar=request.FILES['avatar']
+        isavatar=request.POST.get('isavatar')
+        if isavatar == '1':
+            avatar=request.FILES['avatar']
+        else:
+            avatar=''
         if team:
             return JsonResponse({'errno':1002,'msg':"团队名称重复，请更换"})
         newteam=Team.objects.create(name=teamname,creator=user,avatar=avatar)
-        newteam.avatar_url='http://43.143.140.26'+newteam.avatar.url
+        if avatar:
+            newteam.avatar_url='http://43.143.140.26'+newteam.avatar.url
         newteam.save()
         Membership.objects.create(user=user, team=newteam, role=RoleEnum.CREATOR.value)
         room = Room.objects.create(team=newteam, name=newteam.name)
@@ -137,26 +142,29 @@ def remove(request):
 def list(request):
     if request.method == 'GET':
         teamID=request.GET.get('team_id')
+        user_id=request.GET.get('id')
         members=Membership.objects.filter(team_id=teamID)
         member_list=[]
         for member in members:
             id=member.user_id
             user=User.objects.get(id=id)
-            if user.avatar:
-                avatar_url=user.avatar.url
-            else:
-                avatar_url=''
+            # if user.avatar:
+            #     avatar_url=user.avatar.url
+            # else:
+            #     avatar_url=''
             member_data={
                 "id":id,
                 "role":member.role,
                 "nickname":user.nickname,
                 "realname":user.realname,
                 "email":user.email,
-                "avatar":avatar_url,
+                "avatar":user.avatar_url,
             }
             member_list.append(member_data)
         member_list=sorted(member_list,key=custom_sort_rule)
-        return JsonResponse({'errno':0,'members':member_list})
+        
+        role=Membership.objects.get(team_id=teamID,user_id=user_id).role
+        return JsonResponse({'errno':0,'members':member_list,'role':role})
     else:
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
 
@@ -181,10 +189,10 @@ def teamList(request):
             teamID=member.team_id
             team=Team.objects.get(id=teamID)
             role=Membership.objects.get(user_id=id,team_id=teamID).role
-            if team.avatar:
-                avatar_url='http://43.143.140.26'+ team.avatar.url
-            else:
-                avatar_url=''
+            # if team.avatar:
+            #     avatar_url='http://43.143.140.26'+ team.avatar.url
+            # else:
+            #     avatar_url=''
             member_data={
                 "team_id":teamID,
                 "teamname":team.name,
@@ -206,17 +214,17 @@ def changeTeam(request):
         for member in members:
             id=member.user_id
             user=User.objects.get(id=id)
-            if user.avatar:
-                avatar_url='http://43.143.140.26'+ user.avatar.url
-            else:
-                avatar_url=''
+            # if user.avatar:
+            #     avatar_url='http://43.143.140.26'+ user.avatar.url
+            # else:
+            #     avatar_url=''
             member_data={
                 "id":id,
                 "role":member.role,
                 "nickname":user.nickname,
                 "realname":user.realname,
                 "email":user.email,
-                "avatar":avatar_url
+                "avatar":user.avatar_url
             }
             member_list.append(member_data)
         member_list=sorted(member_list,key=custom_sort_rule)
@@ -233,10 +241,10 @@ def showDetail(request):
         creator=User.objects.get(id=creator_id)
         member=Membership.objects.filter(team_id=teamID)
         num=member.count()
-        if team.avatar:
-            avatar_url='http://43.143.140.26'+ team.avatar.url
-        else:
-            avatar_url=''
+        # if team.avatar:
+        #     avatar_url='http://43.143.140.26'+ team.avatar.url
+        # else:
+        #     avatar_url=''
         team_info={
             'creator_id':creator_id,
             'creator_name':creator.nickname,

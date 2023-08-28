@@ -170,7 +170,7 @@ def deleteAgain(request):
         projectID=request.POST.get('project_id')
         project=ProjectRecycleBin.objects.get(project_id=projectID)
         project.delete()
-        project=Project.objects.get(project_id=projectID)
+        project=Project.objects.get(id=projectID)
         project.delete()
         return JsonResponse({'errno':0,'msg':"项目已彻底删除"})
     else :
@@ -255,6 +255,7 @@ def search(request):
         search_str = request.GET.get('search_str')
         rank = request.GET.get('rank')
         rank = int(rank)
+        # projectlist=Project.objects.filter(team_id=team_id)
         if rank == 1 :
             projects=Project.objects.filter(Q(name__icontains=search_str))
             project_list = []
@@ -266,7 +267,7 @@ def search(request):
                 else:
                     finished = '未归档'
                     finished_time = ''
-                if project.deleted is False:
+                if project.deleted is False and project.team == team:
                     project_data = {
                         'project_id': project.id,
                         'project_name': project.name,
@@ -291,7 +292,7 @@ def search(request):
                 else:
                     finished = '未归档'
                     finished_time = ''
-                if project.deleted is False and project.creator is user:
+                if project.deleted is False and project.creator is user and project.team == team:
                     project_data = {
                         'project_id': project.id,
                         'project_name': project.name,
@@ -308,7 +309,7 @@ def search(request):
             projects = Project.objects.filter(Q(name__icontains=search_str))
             project_list = []
             for project in projects:
-                if project.deleted is False and Collection.objects.filter(user=user,team=team,project_id = project.id):
+                if project.deleted is False and Collection.objects.filter(user=user,team=team,project_id = project.id) and project.team == team:
                     creator = User.objects.get(id=project.creator_id)
                     if project.finished is True:
                         finished = '已归档'

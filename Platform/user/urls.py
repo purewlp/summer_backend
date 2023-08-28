@@ -12,4 +12,5 @@ urlpatterns=[
     path('showinfo',showInfo),
     path('search',search),
     path('isManager', isManager),
+    path('forget',forgetPassword),
 ]
