@@ -61,7 +61,7 @@ class MessageView(View):
                 "type": str(type),
                 "content": str(content),
                 "authorName": str(message.auther.nickname),
-                "avatar": 'media/' + str(message.auther.avatar),
+                "avatar": str(message.auther.avatar_url),
                 "time": str(message.sentTime.strftime("%Y-%m-%d %H:%M:%S")),
                 "image": str(image),
                 "file": str(file),
