@@ -79,6 +79,7 @@ def list(request):
 def detail(request):
     if request.method == 'GET':
         documentID=request.GET.get('document_id')
+        ID=request.GET.get('ID')
         document=Document.objects.get(id=documentID)
         document_info={
             'name':document.name,
@@ -90,11 +91,12 @@ def detail(request):
         members=Membership.objects.filter(team_id=teamID)
         for member in members:
             user=User.objects.get(id=member.user_id)
-            member_data={
-                'user_id':user.id,
-                'nickname':user.nickname,
-            }
-            member_list.append(member_data)
+            if ID!=str(user.id):
+                member_data={
+                    'user_id':user.id,
+                    'nickname':user.nickname,
+                }
+                member_list.append(member_data)
         return JsonResponse({'errno':0,'document_info':document_info,'member_list':member_list})
     else :
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
