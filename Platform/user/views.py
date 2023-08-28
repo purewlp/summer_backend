@@ -193,7 +193,7 @@ def search(request):
                 'avatar_url':avatar_url
             }
             search_list.append(userdata)
-        return JsonResponse({'search_list':search_list})
+        return JsonResponse({'errno':0,'search_list':search_list})
     else:
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
 
