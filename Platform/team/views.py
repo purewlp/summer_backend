@@ -107,7 +107,10 @@ def invite(request):
 def receive(request):
     if request.method == 'POST':
         id=request.POST.get('id')
-        teamID=request.POST.get('team_id')
+        messageID=request.POST.get('message_id')
+        message=Message.objects.get(id=messageID)
+        invitation=message.invitation
+        teamID=invitation.team.id
         user=User.objects.get(id=id)
         team=Team.objects.get(id=teamID)
         room = Room.objects.get(team=team)

@@ -23,7 +23,8 @@ def message(request):
                     'time': message.time,
                     'content': message.content,
                     'link': message.link,
-                    'messageId': message.id
+                    'messageId': message.id,
+                    'isInvited': message.isInvited
                 })
 
         return JsonResponse({'errno': 0, 'unread': unread})
@@ -45,7 +46,8 @@ def readMessage(request):
                     'time': message.time,
                     'content': message.content,
                     'link': message.link,
-                    'messageId': message.id
+                    'messageId': message.id,
+                    'isInvited': message.isInvited
                 })
 
         return JsonResponse({'errno': 0, 'read': read})
