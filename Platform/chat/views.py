@@ -86,10 +86,11 @@ class RoomList(View):
         except:
             return HttpResponse(status=400)
         userRooms = UserRoom.objects.filter(user=user)
-        rooms = []
-        teamRooms = []
-        groupRooms = []
-        personalRooms = []
+        rooms = {
+            "teamRooms":[],
+            "groupRooms":[],
+            "personnalRooms":[]
+        }
         print(groupId)
         if int(groupId) == 0:
             for userRoom in userRooms:
@@ -100,10 +101,7 @@ class RoomList(View):
                         'team': str(userRoom.room.team),
                         'headImg': "https://img0.baidu.com/it/u=2626931382,2326744140&fm=253&fmt=auto&app=138&f=JPEG?w=400&h=400"
                     }
-                    groupRooms.append(groupRoom)
-            rooms.append(groupRooms)
-            rooms.append(teamRooms)
-            rooms.append(personalRooms)
+                    rooms["groupRooms"].append(groupRoom)
             return HttpResponse(json.dumps(rooms), content_type='application/json', status=200)
         else:
             for userRoom in userRooms:
@@ -114,7 +112,7 @@ class RoomList(View):
                         'team': str(userRoom.room.team),
                         'headImg': "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F202007%2F15%2F20200715133648_FUVdd.jpeg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1695967288&t=9a2bb0340d7902d0721d4ac2a0b328ba"
                     }
-                    teamRooms.append(teamRoom)
+                    rooms["teamRooms"].append(teamRoom)
                 elif userRoom.room.rank == 2:
                     personalRoom = {
                         'roomName': str(userRoom.room.name),
@@ -122,10 +120,7 @@ class RoomList(View):
                         'team': str(userRoom.room.team),
                         'headImg': "https://img2.baidu.com/it/u=2363754754,1104567454&fm=253&fmt=auto&app=138&f=JPEG?w=400&h=400"
                     }
-                    personalRooms.append(personalRoom)
-            rooms.append(groupRooms)
-            rooms.append(teamRooms)
-            rooms.append(personalRooms)
+                    rooms["personalRooms"].append(personalRoom)
             return HttpResponse(json.dumps(rooms), content_type='application/json', status=200)
 
 
