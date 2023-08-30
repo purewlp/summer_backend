@@ -102,6 +102,8 @@ class RoomList(View):
                     }
                     groupRooms.append(groupRoom)
             rooms.append(groupRooms)
+            rooms.append(teamRooms)
+            rooms.append(personalRooms)
             return HttpResponse(json.dumps(rooms), content_type='application/json', status=200)
         else:
             for userRoom in userRooms:
@@ -121,6 +123,7 @@ class RoomList(View):
                         'headImg': "https://img2.baidu.com/it/u=2363754754,1104567454&fm=253&fmt=auto&app=138&f=JPEG?w=400&h=400"
                     }
                     personalRooms.append(personalRoom)
+            rooms.append(groupRooms)
             rooms.append(teamRooms)
             rooms.append(personalRooms)
             return HttpResponse(json.dumps(rooms), content_type='application/json', status=200)
