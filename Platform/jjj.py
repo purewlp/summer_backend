@@ -11,7 +11,7 @@ async def send_test_message(uri, message):
 
 
 async def main():
-    uri = f"ws://43.143.140.26:7002/ws/chat/?roomId=1&userId=1"
+    uri = f"ws://43.143.140.26:7002/ws/chat/?roomId=1&userId=2"
     text_message = json.dumps({"text": "@@@"})
 
     await send_test_message(uri, text_message)

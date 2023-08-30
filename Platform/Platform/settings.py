@@ -108,6 +108,12 @@ TEMPLATES = [
 WSGI_APPLICATION = "Platform.wsgi.application"
 ASGI_APPLICATION = "Platform.asgi.application"
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
+
 # STATIC_URL = '/document/static/'
 # STATICFILES_DIRS = (
 #     os.path.join(BASE_DIR, 'static'),
