@@ -64,7 +64,7 @@ class ChatConsumer(WebsocketConsumer):
                     'authorName': str(user.nickname),
                     'avatar': 'media/' + str(user.avatar),
                     'time': str(chatMessage.sentTime.strftime("%Y-%m-%d %H:%M:%S")),
-                    'image': 'media/' + str(chatMessage.image),
+                    'image': 'http://43.143.140.26/'+'media/' + str(chatMessage.image),
                     'content': '',
                     'file': '',
                     'fileName': str(chatMessage.image).split("/")[len(str(chatMessage.image).split("/")) - 1]
