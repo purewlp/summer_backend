@@ -89,7 +89,7 @@ class RoomList(View):
         rooms = {
             "teamRooms":[],
             "groupRooms":[],
-            "personnalRooms":[]
+            "personalRooms":[]
         }
         print(groupId)
         if int(groupId) == 0:
