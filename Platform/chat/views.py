@@ -85,12 +85,13 @@ class RoomList(View):
             user = User.objects.get(id=userId)
         except:
             return HttpResponse(status=400)
-
-        userRooms = UserRoom.objects.filter(user=userId)
+        userRooms = UserRoom.objects.filter(user=user)
+        rooms = []
         teamRooms = []
         groupRooms = []
         personalRooms = []
-        if groupId == 0:
+        print(groupId)
+        if int(groupId) == 0:
             for userRoom in userRooms:
                 if userRoom.room.rank == 1:
                     groupRoom = {
@@ -100,7 +101,8 @@ class RoomList(View):
                         'headImg': "https://img0.baidu.com/it/u=2626931382,2326744140&fm=253&fmt=auto&app=138&f=JPEG?w=400&h=400"
                     }
                     groupRooms.append(groupRoom)
-            return HttpResponse(json.dumps(groupRooms), content_type='application/json', status=200)
+            rooms.append(groupRooms)
+            return HttpResponse(json.dumps(rooms), content_type='application/json', status=200)
         else:
             for userRoom in userRooms:
                 if userRoom.room.rank == 0:
@@ -119,7 +121,9 @@ class RoomList(View):
                         'headImg': "https://img2.baidu.com/it/u=2363754754,1104567454&fm=253&fmt=auto&app=138&f=JPEG?w=400&h=400"
                     }
                     personalRooms.append(personalRoom)
-            return HttpResponse(json.dumps(groupRooms, personalRooms), content_type='application/json', status=200)
+            rooms.append(teamRooms)
+            rooms.append(personalRooms)
+            return HttpResponse(json.dumps(rooms), content_type='application/json', status=200)
 
 
 class FileView(View):
