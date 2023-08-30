@@ -1,10 +1,13 @@
 from user.models import User
 from team.models import Team
 from project.models import Project,ProjectRecycleBin,Collection
+from document.models import Document,DocumentVersion
 from Platform import settings
 from django.http import JsonResponse
 from django.utils import timezone
 from django.db.models import F,Q
+from django.db import transaction
+
 # Create your views here.
 def createProject(request):
     if request.method == 'POST':
@@ -13,7 +16,7 @@ def createProject(request):
         name=request.POST.get('project_name')
         user=User.objects.get(id=id)
         team=Team.objects.get(id=teamID)
-        project=Project.objects.filter(name=name)
+        project=Project.objects.filter(name=name,team=team)
         if project:
             return JsonResponse({'errno':1002,'msg':"项目名称重复，请重新命名"})
         new_project=Project(creator=user,team=team,name=name,finished=False)
@@ -32,8 +35,8 @@ def deleteProject(request):
         project=Project.objects.get(id=projectID)
         id=project.creator_id
         creator=User.objects.get(id=id)
-        ProjectRecycleBin.objects.create(name=project.name,deleter_id=deleter.id,
-        creator_id=creator.id,team=team,project_id=projectID,created_time=project.created_time,
+        ProjectRecycleBin.objects.create(project=project,name=project.name,
+        deleter_id=deleter.id,creator_id=creator.id,team=team,created_time=project.created_time,
         finished=project.finished,finished_time=project.finished_time)
         project.deleted=True
         project.save()
@@ -168,8 +171,8 @@ def ownList(request):
 def deleteAgain(request):
     if request.method == 'POST':
         projectID=request.POST.get('project_id')
-        project=ProjectRecycleBin.objects.get(project_id=projectID)
-        project.delete()
+        # project=ProjectRecycleBin.objects.get(project_id=projectID)
+        # project.delete()
         project=Project.objects.get(id=projectID)
         project.delete()
         return JsonResponse({'errno':0,'msg':"项目已彻底删除"})
@@ -208,7 +211,7 @@ def discollect(request):
         id=request.POST.get('id')
         teamID=request.POST.get('team_id')
         projectID=request.POST.get('project_id')
-        collection=Collection.objects.get(project_id=projectID)
+        collection=Collection.objects.get(project_id=projectID,user_id=id,team_id=teamID)
         collection.delete()
         return JsonResponse({'errno':0,'msg':"取消收藏成功"})
     else:
@@ -362,3 +365,26 @@ def search(request):
             return JsonResponse({'errno': 0, 'project_list': project_list})
     else:
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+
+@transaction.atomic
+def copy(request):
+    if request.method == 'POST':
+        id=request.POST.get('id')
+        user=User.objects.get(id=id)
+        teamID=request.POST.get('team_id')
+        projectID=request.POST.get('project_id')
+        old=Project.objects.get(id=projectID)
+        old.copynum = old.copynum+1
+        old.save()
+        new_project=Project(name=old.name+'_copy'+str(old.copynum),finished=False,deleted=False,creator_id=id,team_id=teamID)
+        new_project.save()
+        documents=Document.objects.filter(project_id=projectID)
+        for document in documents:
+            new_document = Document(name=document.name,content=document.content,creator=user,project=new_project)
+            new_document.save()
+
+        
+        return JsonResponse({'errno':0,'msg':'成功创建副本'})
+    else :
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+        
