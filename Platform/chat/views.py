@@ -27,15 +27,17 @@ class MessageView(View):
 
         # 返回信息
         memberShip = Membership.objects.get(user=user, team=room.team)
-        permission = memberShip.role
-        if room.rank == 1 and room.groupMakerId == user.id:
-            groupPermission = 1
+
+        if room.rank == 1 :
+            if room.groupMakerId == user.id:
+                permission = "创建者"
+            else:
+                permission = "成员"
         else:
-            groupPermission = 0
+            permission = memberShip.role
         ans = {
             "messages": [],
-            "teamPermission": permission,
-            "groupPermission": groupPermission
+            "permission": permission,
         }
         for message in ChatMessage.objects.filter(room=room):
             if message.isImage:
