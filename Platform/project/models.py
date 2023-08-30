@@ -13,6 +13,7 @@ class Project(models.Model):
     finished=models.BooleanField(default=False)
     finished_time=models.DateTimeField(null=True,blank=True)
     deleted=models.BooleanField(default=False)
+    copynum=models.BigIntegerField(default=0)
     
     def save(self, *args, **kwargs):
         # 如果项目ID尚未分配，分配一个从10001开始的唯一项目ID

@@ -1,6 +1,7 @@
 from user.models import User
 from team.models import Team
 from project.models import Project,ProjectRecycleBin,Collection
+from document.models import Document,DocumentVersion
 from Platform import settings
 from django.http import JsonResponse
 from django.utils import timezone
@@ -369,11 +370,20 @@ def search(request):
 def copy(request):
     if request.method == 'POST':
         id=request.POST.get('id')
+        user=User.objects.get(id=id)
         teamID=request.POST.get('team_id')
         projectID=request.POST.get('project_id')
         old=Project.objects.get(id=projectID)
-        new=Project(name=old.name+'_copy',finished=False,deleted=False,creator_id=id,team_id=teamID)
-        new.save()
+        old.copynum = old.copynum+1
+        old.save()
+        new_project=Project(name=old.name+'_copy'+str(old.copynum),finished=False,deleted=False,creator_id=id,team_id=teamID)
+        new_project.save()
+        documents=Document.objects.filter(project_id=projectID)
+        for document in documents:
+            new_document = Document(name=document.name,content=document.content,creator=user,project=new_project)
+            new_document.save()
+
+        
         return JsonResponse({'errno':0,'msg':'成功创建副本'})
     else :
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
