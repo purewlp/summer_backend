@@ -7,4 +7,6 @@ urlpatterns = [
     path('file/', views.FileView.as_view()),
     path('doc/', views.DocView.as_view()),
     path('doc/list/', views.DocListView.as_view()),
+    path('group/make', views.GroupMakeView.as_view()),
+    path('group/invite', views.GroupInviteView.as_view()),
 ]

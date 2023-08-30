@@ -5,9 +5,12 @@ class Room(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=64, null=True)
     team = models.ForeignKey('team.Team', on_delete=models.CASCADE)
-
+    rank = models.IntegerField(default=0)
+    groupMakerId = models.IntegerField(null = True)
     class Meta:
         db_table = 'room'
+
+
 
 
 class ChatMessage(models.Model):
