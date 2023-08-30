@@ -114,14 +114,14 @@ def receive(request):
         teamID=invitation.team.id
         user=User.objects.get(id=id)
         team=Team.objects.get(id=teamID)
-        room = Room.objects.get(team=team)
+        room = Room.objects.get(team=team,rank=0)
         Membership.objects.create(user=user,team=team,role=RoleEnum.MEMBER.value)
         UserRoom.objects.create(user=user,room=room)
         members = team.members.filter(team=team)
         for member in members:
             personalRoom=Room.objects.create(team=team, rank=2, name=user.nickname+" "+member.nickname)
             UserRoom.objects.create(room=personalRoom,user=member)
-            UserRoom.objects.create(room=personalRoom,user=userx)
+            UserRoom.objects.create(room=personalRoom,user=user)
         invitation=Invitation.objects.filter(recipient=user,team=team)
         invitation.delete()
         return JsonResponse({'errno':0,'msg':"您已接受团队邀请，成为"+team.name+"的一员"})

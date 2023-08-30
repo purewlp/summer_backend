@@ -9,4 +9,6 @@ urlpatterns = [
     path('doc/list/', views.DocListView.as_view()),
     path('group/make', views.GroupMakeView.as_view()),
     path('group/invite', views.GroupInviteView.as_view()),
+    path('group/room/remove', views.RoomRemoveView.as_view()),
+    path('group/delete', views.GroupDeleteView.as_view()),
 ]
