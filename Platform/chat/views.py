@@ -263,3 +263,36 @@ class GroupInviteView(View):
             return HttpResponse({"errno":"根本找不到"},status=400)
         UserRoom.objects.create(room=room,user=invited)
         return HttpResponse({"status": 200})
+
+class RoomRemoveView(View):
+    def post(self, request: HttpRequest):
+        try:
+            roomId = request.POST.get('roomId')
+            userId = request.POST.get('userId')
+        except:
+            return HttpResponse({"errno": "你发的什么东西"})
+        try:
+            user = User.objects.get(id=userId)
+            room = Room.objects.get(id=roomId)
+        except:
+            return HttpResponse({"errno":"根本找不到"},status=400)
+        UserRoom.objects.filter(room=room).all().delete()
+        Room.objects.filter(id=roomId).all().delete()
+        return HttpResponse({"status": 200})
+
+class GroupDeleteView(View):
+    def post(self, request: HttpRequest):
+        try:
+            roomId = request.POST.get('roomId')
+            userId = request.POST.get('userId')
+            delId = request.POST.get('delete')
+        except:
+            return HttpResponse({"errno": "你发的什么东西"})
+        try:
+            user = User.objects.get(id=userId)
+            room = Room.objects.get(id=roomId)
+            dels = User.objects.get(id=delId)
+        except:
+            return HttpResponse({"errno":"根本找不到"},status=400)
+        UserRoom.objects.get(room=room,user=dels).delete()
+        return HttpResponse({"status": 200})
