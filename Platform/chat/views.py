@@ -76,7 +76,8 @@ class MessageView(View):
                 "time": str(message.sentTime.strftime("%Y-%m-%d %H:%M:%S")),
                 "image": str(image),
                 "file": str(file),
-                "fileName": str(fileName)
+                "fileName": str(fileName),
+                "fileType": str(message.fileType)
             }
             ans['messages'].append(sub_ans)
         return HttpResponse(json.dumps(ans), content_type='application/json', status=200)
