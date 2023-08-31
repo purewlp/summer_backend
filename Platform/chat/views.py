@@ -64,7 +64,7 @@ class MessageView(View):
                     content = ''
                     image = ''
                     file = 'http://43.143.140.26/'+'media/' + str(message.file)
-                    fileName = str(file).split("/")[len(str(file).split("/")) - 1]
+                    fileName = message.fileName
                     type = 'file'
             sub_ans = {
                 "id": str(message.id),
@@ -89,10 +89,10 @@ class RoomList(View):
     def post(self, request: HttpRequest):
         groupId = request.POST.get('groupId')
         userId = request.POST.get('userId')
-        print(groupId)
         try:
             user = User.objects.get(id=userId)
-            if groupId != 0:
+            if int(groupId) != 0:
+                print(1111)
                 team = Team.objects.get(id = groupId)
         except:
             return HttpResponse(status=401)

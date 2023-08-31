@@ -81,7 +81,8 @@ class ChatConsumer(WebsocketConsumer):
                 isImage=False,
                 auther=User.objects.get(id=userId),
                 room=Room.objects.get(id=roomId),
-                fileType=fileType
+                fileType=fileType,
+                fileName=fileName
             )
             chatMessage.file.save(name=f"{fileName}", content=ContentFile(file_data), save=True)
             for connect in connect_list[roomId]:
@@ -96,7 +97,7 @@ class ChatConsumer(WebsocketConsumer):
                     'image': '',
                     'content': '',
                     'file': 'http://43.143.140.26/'+'media/' + str(chatMessage.file),
-                    'fileName': str(chatMessage.file).split("/")[len(str(chatMessage.file).split("/")) - 1]
+                    'fileName': fileName
                 }
                 connect.send(json.dumps(ret_dit))
         # 文字

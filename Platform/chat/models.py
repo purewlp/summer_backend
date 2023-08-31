@@ -24,6 +24,7 @@ class ChatMessage(models.Model):
     room = models.ForeignKey('chat.Room', on_delete=models.CASCADE)
     isEmoji = models.BooleanField(default=False)
     fileType = models.CharField(null=True,max_length=1024)
+    fileName = models.CharField(null=True,max_length=1024)
     class Meta:
         db_table = 'chatMessage'
 
