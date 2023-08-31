@@ -125,7 +125,7 @@ def setPrototype(request):
 
             # prototype = Prototype(id=id, title=title, canvasStyleData=canvasStyleData)
             # prototype.save()
-            ProjectPrototype(project=Project.objects.get(id=projectID), prototype=prototype).save()
+            ProjectPrototype(project=Project.objects.get(id=projectID), prototype=Prototype.objects.get(id=id)).save()
             return JsonResponse({'errno': 0, 'prototypeID': id})
         except:
             return JsonResponse({'errno': 1002})
