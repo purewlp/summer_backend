@@ -6,7 +6,7 @@ from django.db import models
 class Prototype(models.Model):
     id = models.CharField(primary_key=True, max_length=255)
     componentData = models.TextField(null=True)
-    canvasStyleData = models.TextField()
+    canvasStyleData = models.TextField(null=True)
     title = models.CharField(max_length=64, null=True)
 
 

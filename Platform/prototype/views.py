@@ -47,6 +47,7 @@ def setPrototype(request):
         projectID = request.POST.get('projectID')
         title = request.POST.get('title')
         canvasStyleData = request.POST.get('canvasStyleData')
+        model = request.POST.get('model')   #空白 1  商城 2  学术 3
         id = projectID + '-' + str(random.randint(0, 100))
         while(True):
             try:
@@ -56,7 +57,12 @@ def setPrototype(request):
             id = projectID + '-' + str(random.randint(0, 100))
 
         try:
-            prototype = Prototype(id=id, title=title, canvasStyleData=canvasStyleData)
+            componentData = ''
+            if model == 2:
+                componentData = Prototype.objects.get(id='10004-11')
+            if model == 3:
+                componentData = Prototype.objects.get(id='10005-11')
+            prototype = Prototype(id=id, title=title, canvasStyleData=canvasStyleData, componentData=componentData)
             prototype.save()
             ProjectPrototype(project=Project.objects.get(id=projectID), prototype=prototype).save()
             return JsonResponse({'errno': 0, 'prototypeID': id})
