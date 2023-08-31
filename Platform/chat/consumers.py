@@ -48,7 +48,7 @@ class ChatConsumer(WebsocketConsumer):
             return
         # 图片
         if 'image' in dic:
-            image_base64 = str(dic['image']).split(",")[1]
+            image_base64 =str(dic['image'])
             image_data = base64.b64decode(image_base64)
             chatMessage = ChatMessage.objects.create(
                 isImage=True,
@@ -64,7 +64,7 @@ class ChatConsumer(WebsocketConsumer):
                     'authorName': str(user.nickname),
                     'avatar': 'media/' + str(user.avatar),
                     'time': str(chatMessage.sentTime.strftime("%Y-%m-%d %H:%M:%S")),
-                    'image': 'media/' + str(chatMessage.image),
+                    'image': 'http://43.143.140.26/'+'media/' + str(chatMessage.image),
                     'content': '',
                     'file': '',
                     'fileName': str(chatMessage.image).split("/")[len(str(chatMessage.image).split("/")) - 1]
@@ -72,7 +72,7 @@ class ChatConsumer(WebsocketConsumer):
                 connect.send(json.dumps(ret_dit))
         # 文件
         elif 'file' in dic:
-            file_base64 = str(dic['file']).split(",")[1]
+            file_base64 = str(dic['file'])
             file_data = base64.b64decode(file_base64)
             fileName = str(dic['fileName'])
             chatMessage = ChatMessage.objects.create(

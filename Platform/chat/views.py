@@ -41,7 +41,7 @@ class MessageView(View):
         }
         for message in ChatMessage.objects.filter(room=room):
             if message.isImage:
-                image = 'media/' + str(message.image)
+                image = 'http://43.143.140.26'+'media/' + str(message.image)
                 content = ''
                 file = ''
                 fileName = str(image).split("/")[len(str(image).split("/")) - 1]

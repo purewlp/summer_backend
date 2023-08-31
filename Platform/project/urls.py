@@ -15,5 +15,6 @@ urlpatterns=[
     path('discollect',discollect),
     path('collectlist/',collectList),
     path('search/',search),
+    path('copy',copy)
     
 ]
