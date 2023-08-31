@@ -41,22 +41,29 @@ class MessageView(View):
         }
         for message in ChatMessage.objects.filter(room=room):
             if message.isImage:
-                image = 'http://43.143.140.26'+'media/' + str(message.image)
+                image = 'http://43.143.140.26/'+'media/' + str(message.image)
                 content = ''
                 file = ''
                 fileName = str(image).split("/")[len(str(image).split("/")) - 1]
                 type = 'image'
             else:
                 if message.content is not None:
-                    content = message.content
-                    image = ''
-                    file = ''
-                    fileName = ''
-                    type = 'text'
+                    if message.isEmoji is False:
+                        content = message.content
+                        image = ''
+                        file = ''
+                        fileName = ''
+                        type = 'text'
+                    else:
+                        content = message.content
+                        image = ''
+                        file = ''
+                        fileName = ''
+                        type = 'emoji'
                 else:
                     content = ''
                     image = ''
-                    file = 'media/' + str(message.file)
+                    file = 'http://43.143.140.26/'+'media/' + str(message.file)
                     fileName = str(file).split("/")[len(str(file).split("/")) - 1]
                     type = 'file'
             sub_ans = {
@@ -81,10 +88,13 @@ class RoomList(View):
     def post(self, request: HttpRequest):
         groupId = request.POST.get('groupId')
         userId = request.POST.get('userId')
+        print(groupId)
         try:
             user = User.objects.get(id=userId)
+            if groupId != 0:
+                team = Team.objects.get(id = groupId)
         except:
-            return HttpResponse(status=400)
+            return HttpResponse(status=401)
         userRooms = UserRoom.objects.filter(user=user)
         rooms = {
             "teamRooms":[],
@@ -105,7 +115,7 @@ class RoomList(View):
             return HttpResponse(json.dumps(rooms), content_type='application/json', status=200)
         else:
             for userRoom in userRooms:
-                if userRoom.room.rank == 0:
+                if userRoom.room.rank == 0 and userRoom.room.team == team:
                     teamRoom = {
                         'roomName': str(userRoom.room.name),
                         'roomId': str(userRoom.room.id),
@@ -113,9 +123,14 @@ class RoomList(View):
                         'headImg': "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F202007%2F15%2F20200715133648_FUVdd.jpeg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1695967288&t=9a2bb0340d7902d0721d4ac2a0b328ba"
                     }
                     rooms["teamRooms"].append(teamRoom)
-                elif userRoom.room.rank == 2:
+                elif userRoom.room.rank == 2 and userRoom.room.team == team:
+                    others = UserRoom.objects.filter(room=userRoom.room)
+                    for other in others:
+                        if other.user.id !=userId:
+                            roomName = str(other.user.nickname)
+                            break
                     personalRoom = {
-                        'roomName': str(userRoom.room.name),
+                        'roomName': roomName,
                         'roomId': str(userRoom.room.id),
                         'team': str(userRoom.room.team),
                         'headImg': "https://img2.baidu.com/it/u=2363754754,1104567454&fm=253&fmt=auto&app=138&f=JPEG?w=400&h=400"
@@ -249,19 +264,22 @@ class GroupMakeView(View):
 class GroupInviteView(View):
     def post(self, request: HttpRequest):
         try:
-            teamId = request.POST.get('teamId')
+            roomId = request.POST.get('roomId')
             userId = request.POST.get('userId')
-            invite = request.POST.get('invite')
+            invites = request.POST.getlist('invite[]')
+            print(invites)
         except:
             return HttpResponse({"errno":"你发的什么东西"})
         try:
-            team = Team.objects.get(id=teamId)
             user = User.objects.get(id=userId)
-            room = Room.objects.get(groupMakerId=user.id)
-            invited = User.objects.get(id=invite)
+            room = Room.objects.get(id=roomId)
+            invites=list(invites)
+            for invite in invites:
+                print(invite)
+                invited = User.objects.get(id=invite)
+                UserRoom.objects.create(room=room, user=invited)
         except:
             return HttpResponse({"errno":"根本找不到"},status=400)
-        UserRoom.objects.create(room=room,user=invited)
         return HttpResponse({"status": 200})
 
 class RoomRemoveView(View):
