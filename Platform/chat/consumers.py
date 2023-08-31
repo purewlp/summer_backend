@@ -48,7 +48,7 @@ class ChatConsumer(WebsocketConsumer):
             return
         # 图片
         if 'image' in dic:
-            image_base64 =str(dic['image'])
+            image_base64 =str(dic['image']).split(",")[1]
             image_data = base64.b64decode(image_base64)
             chatMessage = ChatMessage.objects.create(
                 isImage=True,
@@ -62,23 +62,27 @@ class ChatConsumer(WebsocketConsumer):
                     'authorId': str(userId),
                     'type': 'image',
                     'authorName': str(user.nickname),
-                    'avatar': 'media/' + str(user.avatar),
+                    'avatar': 'http://43.143.140.26/'+'media/' + str(user.avatar),
                     'time': str(chatMessage.sentTime.strftime("%Y-%m-%d %H:%M:%S")),
                     'image': 'http://43.143.140.26/'+'media/' + str(chatMessage.image),
                     'content': '',
                     'file': '',
+                    'fileType': '',
                     'fileName': str(chatMessage.image).split("/")[len(str(chatMessage.image).split("/")) - 1]
                 }
                 connect.send(json.dumps(ret_dit))
         # 文件
         elif 'file' in dic:
-            file_base64 = str(dic['file'])
+            file_base64 =str(dic['file']).split(",")[1]
             file_data = base64.b64decode(file_base64)
             fileName = str(dic['fileName'])
+            fileType = str(dic['fileType'])
             chatMessage = ChatMessage.objects.create(
                 isImage=False,
                 auther=User.objects.get(id=userId),
-                room=Room.objects.get(id=roomId)
+                room=Room.objects.get(id=roomId),
+                fileType=fileType,
+                fileName=fileName
             )
             chatMessage.file.save(name=f"{fileName}", content=ContentFile(file_data), save=True)
             for connect in connect_list[roomId]:
@@ -86,13 +90,14 @@ class ChatConsumer(WebsocketConsumer):
                     "id": str(chatMessage.id),
                     'authorId': str(userId),
                     'type': 'file',
+                    'fileType': fileType,
                     'authorName': str(user.nickname),
-                    'avatar': 'media/' + str(user.avatar),
+                    'avatar': 'http://43.143.140.26/'+'media/' + str(user.avatar),
                     'time': str(chatMessage.sentTime.strftime("%Y-%m-%d %H:%M:%S")),
                     'image': '',
                     'content': '',
-                    'file': 'media/' + str(chatMessage.file),
-                    'fileName': str(chatMessage.file).split("/")[len(str(chatMessage.file).split("/")) - 1]
+                    'file': 'http://43.143.140.26/'+'media/' + str(chatMessage.file),
+                    'fileName': fileName
                 }
                 connect.send(json.dumps(ret_dit))
         # 文字
@@ -110,11 +115,12 @@ class ChatConsumer(WebsocketConsumer):
                     'authorId': str(userId),
                     'type': 'text',
                     'authorName': str(user.nickname),
-                    'avatar': 'media/' + str(user.avatar),
+                    'avatar': 'http://43.143.140.26/'+'media/' + str(user.avatar),
                     'time': str(chatMessage.sentTime.strftime("%Y-%m-%d %H:%M:%S")),
                     'image': '',
                     'content': text,
                     'file': '',
+                    'fileType': '',
                     'fileName': ''
                 }
                 connect.send(json.dumps(ret_dit))
@@ -133,10 +139,11 @@ class ChatConsumer(WebsocketConsumer):
                     'authorId': str(userId),
                     'type': 'emoji',
                     'authorName': str(user.nickname),
-                    'avatar': 'media/' + str(user.avatar),
+                    'avatar': 'http://43.143.140.26/'+'media/' + str(user.avatar),
                     'time': str(chatMessage.sentTime.strftime("%Y-%m-%d %H:%M:%S")),
                     'image': '',
                     'content': text,
+                    'fileType': '',
                     'file': '',
                     'fileName': ''
                 }
