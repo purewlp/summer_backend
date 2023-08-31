@@ -1,7 +1,8 @@
 from user.models import User
 from team.models import Team
 from project.models import Project,ProjectRecycleBin,Collection
-from document.models import Document,DocumentVersion
+from document.models import Document,DocumentVersion,Folder
+from prototype.models import ProjectPrototype,Prototype
 from Platform import settings
 from django.http import JsonResponse
 from django.utils import timezone
@@ -373,17 +374,45 @@ def copy(request):
         user=User.objects.get(id=id)
         teamID=request.POST.get('team_id')
         projectID=request.POST.get('project_id')
-        old=Project.objects.get(id=projectID)
-        old.copynum = old.copynum+1
-        old.save()
-        new_project=Project(name=old.name+'_copy'+str(old.copynum),finished=False,deleted=False,creator_id=id,team_id=teamID)
+        old_project=Project.objects.get(id=projectID)
+        old_project.copynum = old_project.copynum+1
+        old_project.save()
+        new_project=Project(name=old_project.name+'_copy'+str(old_project.copynum),
+        finished=False,deleted=False,creator_id=id,team_id=teamID)
         new_project.save()
+        folder_doc_list=[]
+        folders=Folder.objects.filter(project_id=old_project.id)
         documents=Document.objects.filter(project_id=projectID)
-        for document in documents:
-            new_document = Document(name=document.name,content=document.content,creator=user,project=new_project)
-            new_document.save()
+        for folder in folders:
+            new_folder=Folder(name=folder.name,project_id=new_project.id)
+            new_folder.save()
+            folder_id=folder.id
+            docs=documents.filter(folder=folder)
+            for doc in docs:
+                folder_doc_list.append(doc.id)
+                new_doc = Document(name=doc.name,content=doc.content,creator=user,
+                project=new_project,folder_id=new_folder.id)
+                new_doc.save()
+                DocumentVersion.objects.create(document=new_doc,name=new_doc.name,
+                content=new_doc.content)
 
+        # documents=Document.objects.filter(project_id=projectID)
+        for document in documents:
+            if document.id not in folder_doc_list:
+                new_document = Document(name=document.name,content=document.content,
+                creator=user,project=new_project)
+                new_document.save()
+                DocumentVersion.objects.create(document=new_document,name=new_document.name,
+                content=new_document.content)
         
+        projectprototypes=ProjectPrototype.objects.filter(project_id=old_project.id)
+        for projectprototype in projectprototypes:
+
+            prototype = Prototype.objects.get(id=projectprototype.prototype_id)
+            new_prototype=Prototype(title=prototype.title,componentData=prototype.componentData,
+            canvasStyleData=prototype.canvasStyleData)
+            new_prototype.save()
+            ProjectPrototype.objects.create(project_id=new_project.id,prototype=new_prototype)
         return JsonResponse({'errno':0,'msg':'成功创建副本'})
     else :
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})

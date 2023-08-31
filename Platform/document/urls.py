@@ -11,5 +11,7 @@ urlpatterns=[
     path('createfolder',createFolder),
     path('deletefolder',deleteFolder),
     path('rename',rename),
+    path('versionlist/',versionList),
+    path('recover',recover),
 
 ]
