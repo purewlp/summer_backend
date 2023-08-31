@@ -17,8 +17,9 @@ def savePrototype(request):
         canvasStyleData = request.POST.get('canvasStyleData')
 
         try:
-            prototype = Prototype(id=id, componentData=componentData,
-                                  canvasStyleData=canvasStyleData)
+            prototype = Prototype.objects.get(id=id)
+            prototype.componentData = componentData
+            prototype.canvasStyleData = canvasStyleData
             prototype.save()
             return JsonResponse({'errno': 0})
         except:
@@ -42,28 +43,88 @@ def getPrototype(request):
         return JsonResponse({'errno': 1001})
 
 
+def newId(projectID):
+    id = projectID + '-' + str(random.randint(0, 100))
+    while(True):
+        try:
+            Prototype.objects.get(id=id)
+        except:
+            break
+        id = projectID + '-' + str(random.randint(0, 100))
+    return id
+
+def newPrototype(projectID, modeltype, title, canvasStyleData):
+    # id = projectID + '-' + str(random.randint(0, 100))
+    # while(True):
+    #     try:
+    #         Prototype.objects.get(id=id)
+    #     except:
+    #         break
+    #     id = projectID + '-' + str(random.randint(0, 100))
+
+    models = []
+    rid = newId(projectID)
+    project = Project.objects.get(id=projectID)
+
+    if modeltype == '1':
+        # models.append(Prototype.objects.get(id='10004-11'))
+        main = Prototype.objects.get(id='10004-11')
+        models.append(Prototype.objects.get(id='10004-22'))
+        models.append(Prototype.objects.get(id='10004-43'))
+        models.append(Prototype.objects.get(id='10004-95'))
+
+    elif modeltype == '2':
+        # models.append(Prototype.objects.get(id='10005-11'))
+        main = Prototype.objects.get(id='10005-11')
+        models.append(Prototype.objects.get(id='10005-22'))
+        models.append(Prototype.objects.get(id='10005-43'))
+        models.append(Prototype.objects.get(id='10005-95'))
+
+    else:
+        prototype = Prototype(id=rid, title=title, canvasStyleData=canvasStyleData)
+        prototype.save()
+        ProjectPrototype(project=project, prototype=prototype).save()
+        return rid
+
+    for model in models:
+        # print(model.title)
+        prototype = Prototype(id=newId(projectID), title=title+'-'+model.title, canvasStyleData=model.canvasStyle, componentData=model.componentData)
+        prototype.save()
+        ProjectPrototype(project=project, prototype=prototype).save()
+
+    prototype = Prototype(id=rid, title=title+'-'+main.title, canvasStyleData=main.canvasStyle, componentData=main.componentData)
+    prototype.save()
+    ProjectPrototype(project=project, prototype=prototype).save()
+    return rid
+
+
 def setPrototype(request):
     if request.method == 'POST':
         projectID = request.POST.get('projectID')
         title = request.POST.get('title')
         canvasStyleData = request.POST.get('canvasStyleData')
         model = request.POST.get('model')   #空白 1  商城 2  学术 3
-        id = projectID + '-' + str(random.randint(0, 100))
-        while(True):
-            try:
-                Prototype.objects.get(id=id)
-            except:
-                break
-            id = projectID + '-' + str(random.randint(0, 100))
+        # id = projectID + '-' + str(random.randint(0, 100))
+        # while(True):
+        #     try:
+        #         Prototype.objects.get(id=id)
+        #     except:
+        #         break
+        #     id = projectID + '-' + str(random.randint(0, 100))
 
         try:
-            componentData = ''
-            if model == 2:
-                componentData = Prototype.objects.get(id='10004-11')
-            if model == 3:
-                componentData = Prototype.objects.get(id='10005-11')
-            prototype = Prototype(id=id, title=title, canvasStyleData=canvasStyleData, componentData=componentData)
-            prototype.save()
+            # componentData = ''
+            # if model == '2':
+            #     componentData = Prototype.objects.get(id='10004-11').componentData
+            #     canvasStyleData = Prototype.objects.get(id='10004-11').canvasStyleData
+            # if model == '3':
+            #     componentData = Prototype.objects.get(id='10005-11').componentData
+            #     canvasStyleData = Prototype.objects.get(id='10005-11').canvasStyleData
+            id = newPrototype(projectID, model, title, canvasStyleData)
+
+
+            # prototype = Prototype(id=id, title=title, canvasStyleData=canvasStyleData)
+            # prototype.save()
             ProjectPrototype(project=Project.objects.get(id=projectID), prototype=prototype).save()
             return JsonResponse({'errno': 0, 'prototypeID': id})
         except:

@@ -20,7 +20,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from chat.consumers import ChatConsumer
-#from message.consumers import MessageConsumer
+from message.consumers import MessageConsumer
+from prototype.customers import PrototypeConsumer
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -35,8 +36,8 @@ urlpatterns = [
 
 websocket_urlpatterns = [
     path(r'ws/chat/', ChatConsumer.as_asgi()),
-#    path(r'ws/message/', MessageConsumer.as_asgi()),
-    # path(r'ws/readmessage/', ReadMessageConsumer.as_asgi())
+    path(r'ws/message/', MessageConsumer.as_asgi()),
+    path(r'ws/prototype/', PrototypeConsumer.as_asgi()),
 ]
 
 if settings.DEBUG:
