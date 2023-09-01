@@ -8,6 +8,7 @@ class Prototype(models.Model):
     componentData = models.TextField(null=True)
     canvasStyleData = models.TextField(null=True)
     title = models.CharField(max_length=64, null=True)
+    isPreview = models.BooleanField(default=False)
 
 
     class Meta:

@@ -104,6 +104,3 @@ class PrototypeConsumer(WebsocketConsumer):
             connect.send(cid)
 
 
-        # self.send(json.dumps())
-
-

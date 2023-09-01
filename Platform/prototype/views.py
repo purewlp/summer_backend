@@ -186,12 +186,76 @@ def rename(request):
         return JsonResponse({'errno': 1001})
 
 
+def createPreview(request):
+    if request.method == 'POST':
+        projectId = request.POST.get('projectId')
+        try:
+            project_prototypes = ProjectPrototype.objects.filter(project_id=projectId)
+            for project_prototype in project_prototypes:
+                prototype = project_prototype.prototype
+                prototype.isPreview = True
+                prototype.save()
+            return JsonResponse({'errno': 0})
+        except:
+            return JsonResponse({'errno': 1002})
+    else:
+        return JsonResponse({'errno': 1001})
+
+def closePreview(request):
+    if request.method == 'POST':
+        projectId = request.POST.get('projectId')
+        try:
+            project_prototypes = ProjectPrototype.objects.filter(project_id=projectId)
+            for project_prototype in project_prototypes:
+                prototype = project_prototype.prototype
+                prototype.isPreview = False
+                prototype.save()
+            return JsonResponse({'errno': 0})
+        except:
+            return JsonResponse({'errno': 1002})
+
+    else:
+        return JsonResponse({'errno': 1001})
+
+def getAllPreview(request):
+    if request.method == 'GET':
+        projectId = request.GET.get('projectId')
+        try:
+            project = Project(id=projectId)
+            project_prototypes = ProjectPrototype.objects.filter(project=project)
+            prototypes = []
+            for project_prototype in project_prototypes:
+                prototype = project_prototype.prototype
+                if not prototype.isPreview:
+                    return JsonResponse({'errno': 1003})
+                prototypes.append({
+                    'prototypeID': prototype.id,
+                    'title': prototype.title,
+                    'isEditing': False,
+                    'newName': '',
+                    'hover': False
+                })
+            return JsonResponse({'errno': 0, 'prototypes': prototypes})
+        except:
+            return JsonResponse({'errno': 1002})
+    else:
+        return JsonResponse({'errno': 1001})
 
 
+def getPreview(request):
+    if request.method == 'GET':
+        id = request.GET.get('prototypeID')
+        try:
+            prototype = Prototype.objects.get(id=id)
+            if not prototype.isPreview:
+                return JsonResponse({'errno': 1003})
+            return JsonResponse({'errno': 0, 'componentData': prototype.componentData,
+                                 'canvasStyleData': prototype.canvasStyleData})
+        except:
+            return JsonResponse({'errno': 1002})
 
-
-
-
+    else:
+        return JsonResponse({'errno': 1001})
 
 
 

@@ -8,4 +8,8 @@ urlpatterns = [
     path('deleteprototype', deletePrototype),
     path('getdesign', getDesign),
     path('rename', rename),
+    path('createpreview', createPreview),
+    path('closepreview', closePreview),
+    path('getallpreview', getAllPreview),
+    path('getpreview', getPreview),
 ]
