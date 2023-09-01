@@ -11,4 +11,5 @@ urlpatterns = [
     path('group/invite', views.GroupInviteView.as_view()),
     path('group/room/remove', views.RoomRemoveView.as_view()),
     path('group/delete', views.GroupDeleteView.as_view()),
+    path('room/', views.RoomView.as_view()),
 ]

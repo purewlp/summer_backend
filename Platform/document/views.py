@@ -1,6 +1,6 @@
 from project.models import Project
 from team.models import Team,Membership
-from document.models import Document,DocumentVersion
+from document.models import Document,DocumentVersion,Folder
 from user.models import User
 from message.models import Message,UserMessage
 from Platform import settings
@@ -12,6 +12,7 @@ from django.utils import timezone
 def create(request):
     if request.method == 'POST':
         projectID=request.POST.get('project_id')
+        folderID=request.POST.get('folder_id')
         id=request.POST.get('id') 
         name=request.POST.get('name')
         if not name:
@@ -21,7 +22,10 @@ def create(request):
         #     return JsonResponse({'errno':1002,'msg':"名称重复，请重新输入"})
         project=Project.objects.get(id=projectID)
         user=User.objects.get(id=id)
-        document=Document(project=project,creator=user,name=name)
+        if not folderID:
+            document=Document(project=project,creator=user,name=name)
+        else:
+            document=Document(project=project,creator=user,name=name,folder_id=folderID)
         document.save()
         DocumentVersion.objects.create(document=document,name=document.name,
         content=document.content)
@@ -34,9 +38,9 @@ def save(request):
         documentID=request.POST.get('document_id')
         name=request.POST.get('name')
         content=request.POST.get('content')
-        document=Document.objects.filter(name=name)
-        if document:
-            return JsonResponse({'errno':1002,'msg':"名称重复，请重新输入"})
+        # document=Document.objects.filter(name=name)
+        # if document:
+        #     return JsonResponse({'errno':1002,'msg':"名称重复，请重新输入"})
         document=Document.objects.get(id=documentID)
         document.name=name
         document.content=content
@@ -60,9 +64,22 @@ def delete(request):
 def list(request):
     if request.method == 'GET':
         projectID=request.GET.get('project_id')
+        folderID=request.GET.get('folder_id')
         project=Project.objects.get(id=projectID)
-        documents=Document.objects.filter(project_id=projectID)
+        folder_list=[]
         document_list=[]
+        if folderID:
+            documents=Document.objects.filter(project_id=projectID,folder_id=folderID)
+        else:
+            documents=Document.objects.filter(project_id=projectID)
+            folders=Folder.objects.filter(project_id=projectID)
+            for folder in folders:
+                folder_data={
+                    'folder_id':folder.id,
+                    'name':folder.name,
+                }
+                folder_list.append(folder_data)
+  
         for document in documents:
             document_data={
                 'document_id':document.id,
@@ -72,7 +89,7 @@ def list(request):
                 'edited_time':document.edited_time,
             }
             document_list.append(document_data)
-        return JsonResponse({'errno':0,'document_list':document_list})
+        return JsonResponse({'errno':0,'document_list':document_list,'folder_list':folder_list})
     else:
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
 
@@ -118,4 +135,70 @@ def remind(request):
         user_message.save()
         return JsonResponse({'errno':0,'msg':"@成功"})
     else:
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+
+def createFolder(request):
+    if request.method == 'POST':
+        projectID=request.POST.get('project_id')
+        project=Project.objects.get(id=projectID)
+        folder=Folder(project=project)
+        folder.save()
+        return JsonResponse({'errno':0,'msg':"成功新建文件夹"})
+    else:
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+
+def deleteFolder(request):
+    if request.method == 'POST':
+        folderID=request.POST.get('folder_id')
+        # projectID=request.POST.get('project_id')
+        # project=Project.objects.get(id=projectID)
+        folder=Folder.objects.get(id=folderID)
+        folder.delete()
+        return JsonResponse({'errno':0,'msg':"成功删除文件夹"})
+    else:
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+
+def rename(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        folderID=request.POST.get('folder_id')
+        folder=Folder.objects.get(id=folderID)
+        folder.name=name
+        folder.save()
+        return JsonResponse({'errno':0,'msg':"重命名成功"})
+    else:
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+
+def versionList(request):
+    if request.method == 'GET':
+        documentID=request.GET.get('document_id')
+        versions=DocumentVersion.objects.filter(document_id=documentID)
+        version_list=[]
+        for version in versons:
+            version_data={
+                'version_id':version.id,
+                'name':version.name,
+                'content':version.content,
+                'edited_time':version.edited_time,
+                'version':version
+            }
+            version_list.append(version_data)
+        return JsonResponse({'errno':0,'version_list':version_list})
+    else:
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+
+def recover(request):
+    if request.method == 'POST':
+        versionID=request.POST.get('version_id')
+        documentID=request.POST.get('document_id')
+        version=DocumentVersion.objects.get(id=versionID)
+        document=Document.objects.get(id=documentID)
+        document.name=version.name
+        document.content=version.content
+        document.edited_time=timezone.now()
+        document.save()
+        DocumentVersion.objects.create(document=document,name=document.name,
+        content=document.content)
+        return JsonResponse({'errno':0,'msg':"保存成功"})
+    else :
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
