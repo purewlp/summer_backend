@@ -304,16 +304,20 @@ class GroupDeleteView(View):
         try:
             roomId = request.POST.get('roomId')
             userId = request.POST.get('userId')
-            delId = request.POST.get('delete')
+            del_str = request.POST.get('delete')
+            dels = json.loads(del_str)
+            print(dels)
         except:
             return HttpResponse({"errno": "你发的什么东西"})
         try:
             user = User.objects.get(id=userId)
             room = Room.objects.get(id=roomId)
-            dels = User.objects.get(id=delId)
+            for delete in dels:
+                print(delete)
+                deleted = User.objects.get(id=delete)
+                UserRoom.objects.get(room=room, user=deleted).delete()
         except:
-            return HttpResponse({"errno":"根本找不到"},status=400)
-        UserRoom.objects.get(room=room,user=dels).delete()
+            return HttpResponse({"errno": "根本找不到"}, status=400)
         return HttpResponse({"status": 200})
 
 class RoomView(View):
