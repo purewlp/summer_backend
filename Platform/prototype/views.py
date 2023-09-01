@@ -66,14 +66,14 @@ def newPrototype(projectID, modeltype, title, canvasStyleData):
     rid = newId(projectID)
     project = Project.objects.get(id=projectID)
 
-    if modeltype == '1':
+    if modeltype == '2':
         # models.append(Prototype.objects.get(id='10004-11'))
         main = Prototype.objects.get(id='10004-11')
         models.append(Prototype.objects.get(id='10004-22'))
         models.append(Prototype.objects.get(id='10004-43'))
         models.append(Prototype.objects.get(id='10004-95'))
 
-    elif modeltype == '2':
+    elif modeltype == '3':
         # models.append(Prototype.objects.get(id='10005-11'))
         main = Prototype.objects.get(id='10005-11')
         models.append(Prototype.objects.get(id='10005-22'))
@@ -88,11 +88,11 @@ def newPrototype(projectID, modeltype, title, canvasStyleData):
 
     for model in models:
         # print(model.title)
-        prototype = Prototype(id=newId(projectID), title=title+'-'+model.title, canvasStyleData=model.canvasStyle, componentData=model.componentData)
+        prototype = Prototype(id=newId(projectID), title=title+'-'+model.title, canvasStyleData=model.canvasStyleData, componentData=model.componentData)
         prototype.save()
         ProjectPrototype(project=project, prototype=prototype).save()
 
-    prototype = Prototype(id=rid, title=title+'-'+main.title, canvasStyleData=main.canvasStyle, componentData=main.componentData)
+    prototype = Prototype(id=rid, title=title+'-'+main.title, canvasStyleData=main.canvasStyleData, componentData=main.componentData)
     prototype.save()
     ProjectPrototype(project=project, prototype=prototype).save()
     return rid
@@ -112,23 +112,22 @@ def setPrototype(request):
         #         break
         #     id = projectID + '-' + str(random.randint(0, 100))
 
-        try:
-            # componentData = ''
-            # if model == '2':
-            #     componentData = Prototype.objects.get(id='10004-11').componentData
-            #     canvasStyleData = Prototype.objects.get(id='10004-11').canvasStyleData
-            # if model == '3':
-            #     componentData = Prototype.objects.get(id='10005-11').componentData
-            #     canvasStyleData = Prototype.objects.get(id='10005-11').canvasStyleData
-            id = newPrototype(projectID, model, title, canvasStyleData)
+        # try:
+        # componentData = ''
+        # if model == '2':
+        #     componentData = Prototype.objects.get(id='10004-11').componentData
+        #     canvasStyleData = Prototype.objects.get(id='10004-11').canvasStyleData
+        # if model == '3':
+        #     componentData = Prototype.objects.get(id='10005-11').componentData
+        #     canvasStyleData = Prototype.objects.get(id='10005-11').canvasStyleData
+        id = newPrototype(projectID, model, title, canvasStyleData)
 
 
-            # prototype = Prototype(id=id, title=title, canvasStyleData=canvasStyleData)
-            # prototype.save()
-            ProjectPrototype(project=Project.objects.get(id=projectID), prototype=Prototype.objects.get(id=id)).save()
-            return JsonResponse({'errno': 0, 'prototypeID': id})
-        except:
-            return JsonResponse({'errno': 1002})
+        # prototype = Prototype(id=id, title=title, canvasStyleData=canvasStyleData)
+        # prototype.save()
+        return JsonResponse({'errno': 0, 'prototypeID': id})
+        # except:
+        #     return JsonResponse({'errno': 1002})
 
     else:
         return JsonResponse({'errno': 1001})
