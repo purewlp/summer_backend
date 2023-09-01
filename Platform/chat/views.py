@@ -336,7 +336,7 @@ class RoomView(View):
         elif room.rank ==2:
             role = "成员"
         else:
-            if room.groupMakerId == userId:
+            if int(room.groupMakerId) == int(userId):
                 role = "创建者"
             else:
                 role = '成员'
