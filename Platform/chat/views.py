@@ -315,3 +315,57 @@ class GroupDeleteView(View):
             return HttpResponse({"errno":"根本找不到"},status=400)
         UserRoom.objects.get(room=room,user=dels).delete()
         return HttpResponse({"status": 200})
+
+class RoomView(View):
+    def post(self, request: HttpRequest):
+        try:
+            roomId = request.POST.get('roomId')
+            userId = request.POST.get('userId')
+        except:
+            return HttpResponse({"errno": "你发的什么东西"})
+        try:
+            room = Room.objects.get(id=roomId)
+            leader = User.objects.get(id= userId)
+        except:
+            return HttpResponse({"errno":"根本找不到"},status=400)
+        if room.rank ==0:
+            try:
+                role = Membership.objects.get(user=leader,team=room.team).role
+            except:
+                return HttpResponse({"errno": "根本找不到"}, status=400)
+        elif room.rank ==2:
+            role = "成员"
+        else:
+            if room.groupMakerId == userId:
+                role = "创建者"
+            else:
+                role = '成员'
+        identity = {
+            "role": str(role),
+            "members": [],
+        }
+        userRooms = UserRoom.objects.filter(room=room)
+        users = []
+        for userRoom in userRooms:
+            users.append(userRoom.user)
+        for user in users:
+            if room.rank == 0:
+                role = Membership.objects.get(user=user, team=room.team).role
+            elif room.rank == 2:
+                role = "成员"
+            else:
+                if room.groupMakerId == user.id:
+                    role = "创建者"
+                else:
+                    role = '成员'
+            member_data = {
+                "id": user.id,
+                "role": str(role),
+                "nickname": user.nickname,
+                "realname": user.realname,
+                "email": user.email,
+                "avatar": user.avatar_url,
+            }
+            identity["members"].append(member_data)
+
+        return HttpResponse(json.dumps(identity), content_type='application/json', status=200)
