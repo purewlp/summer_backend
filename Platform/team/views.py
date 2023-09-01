@@ -98,7 +98,8 @@ def invite(request):
 
         if not invitation:
             invitation = Invitation.objects.create(recipient=user,team=team,inviter=inviter)
-            message = Message(content=team.name+"团队邀请", isInvited=True, publisher=user.nickname, invitation=invitation)
+            message = Message(content=team.name+"团队邀请", isInvited=True, publisher=user.nickname,
+             invitation=invitation)
             message.save()
             UserMessage(user=user, message=message).save()
         return JsonResponse({'errno':0,'msg':"您已成功发出邀请"})
@@ -125,6 +126,17 @@ def receive(request):
         invitation=Invitation.objects.filter(recipient=user,team=team)
         invitation.delete()
         return JsonResponse({'errno':0,'msg':"您已接受团队邀请，成为"+team.name+"的一员"})
+    else:
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})
+
+def refuse(request):
+    if request.method == 'POST':
+        id=request.POST.get('id')
+        messageID=request.POST.get('message_id')
+        message=Message.objects.get(id=messageID)
+        invitation=message.invitation
+        invitation.delete()
+        return JsonResponse({'errno':0,'msg':"您已拒绝"+team.name+"团队的邀请"})
     else:
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
 

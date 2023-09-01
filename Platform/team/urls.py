@@ -12,5 +12,6 @@ urlpatterns=[
     path('teamlist/',teamList),
     path('changeteam',changeTeam),
     path('showdetail/',showDetail),
+    path('refuse',refuse)
 
 ]

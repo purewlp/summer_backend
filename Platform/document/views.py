@@ -81,14 +81,25 @@ def list(request):
                 folder_list.append(folder_data)
   
         for document in documents:
-            document_data={
-                'document_id':document.id,
-                'name':document.name,
-                'created_time':document.created_time,
-                'creator_id':document.creator_id,
-                'edited_time':document.edited_time,
-            }
-            document_list.append(document_data)
+            if folderID:
+                document_data={
+                    'document_id':document.id,
+                    'name':document.name,
+                    'created_time':document.created_time,
+                    'creator_id':document.creator_id,
+                    'edited_time':document.edited_time,
+                }
+                document_list.append(document_data)
+            else:
+                if document.folder is None:
+                    document_data={
+                        'document_id':document.id,
+                        'name':document.name,
+                        'created_time':document.created_time,
+                        'creator_id':document.creator_id,
+                        'edited_time':document.edited_time,
+                    }
+                    document_list.append(document_data)
         return JsonResponse({'errno':0,'document_list':document_list,'folder_list':folder_list})
     else:
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
