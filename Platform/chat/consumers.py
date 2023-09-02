@@ -115,7 +115,7 @@ class ChatConsumer(WebsocketConsumer):
                 at = re.search(r'@[^ ]+', text).span()
                 nickname = text[at[0] + 1:at[1]]
                 print(nickname)
-                if str(nickname) == "全体成员":
+                if str(nickname) =="所有人":
                     print(21)
                     userRooms = UserRoom.objects.filter(room__id=roomId)
                     for userRoom in userRooms:
