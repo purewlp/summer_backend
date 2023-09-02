@@ -35,9 +35,16 @@ class MessageView(View):
                 permission = "成员"
         else:
             permission = memberShip.role
+        if room.rank == 0:
+            roomType = "team"
+        elif room.rank == 1:
+            roomType ="group"
+        else:
+            roomType = "personal"
         ans = {
             "messages": [],
             "permission": permission,
+            "type": roomType
         }
         for message in ChatMessage.objects.filter(room=room):
             if message.isImage:
