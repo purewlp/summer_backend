@@ -141,9 +141,9 @@ def remind(request):
         project=Project.objects.get(id=projectID)
         document=Document.objects.get(id=documentID)
         content=send.nickname+"在项目"+project.name+"的"+document.name+"文档中提到了你"
-        message=Message(content=content,publisher=send.nickname)
+        message=Message(content=content,publisher=send.nickname,link=link)
         message.save()
-        user_message=UserMessage(user=receive,message=message,link=link)
+        user_message=UserMessage(user=receive,message=message)
         user_message.save()
         return JsonResponse({'errno':0,'msg':"@成功"})
     else:
