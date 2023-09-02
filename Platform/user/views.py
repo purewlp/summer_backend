@@ -155,10 +155,6 @@ def showInfo(request):
     if request.method == 'GET':
         id=request.GET.get('id')
         user=User.objects.get(id=id)
-        if user.avatar:
-            avatar_url=user.avatar_url
-        else:
-            avatar_url=''
         userdata={
             'errno':0,
             'msg':"成功获取信息",
@@ -166,7 +162,7 @@ def showInfo(request):
             'email':user.email,
             'nickname':user.nickname,
             'realname':user.realname,
-            'avatar_url':avatar_url,
+            'avatar_url':user.avatar_url,
             'id': id
         }
         return JsonResponse(userdata)
