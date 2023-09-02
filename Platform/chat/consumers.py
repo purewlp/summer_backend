@@ -119,10 +119,12 @@ class ChatConsumer(WebsocketConsumer):
                     print(21)
                     userRooms = UserRoom.objects.filter(room__id=roomId)
                     for userRoom in userRooms:
-                        if userRoom.user.id != userId:
+                        if int(userRoom.user.id) != int(userId):
                             content = str(User.objects.get(id=userId).nickname)+" 在 "+str(Room.objects.get(id=roomId).name)+" 房间内@了您，消息内容为："
+                            rooom = Room.objects.get(id=roomId)
+                            link = "/group/chat/"+str(rooom.team.id)
                             message = Message(content=content+text[0:at[0]] + text[at[1]:],
-                                              publisher=User.objects.get(id=userId).nickname)
+                                              publisher=User.objects.get(id=userId).nickname,link=link)
                             message.save()
                             print(12)
                             user_message = UserMessage(user=userRoom.user, message=message)
