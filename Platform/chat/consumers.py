@@ -9,7 +9,8 @@ from django.core.files.base import ContentFile
 
 from chat.models import UserRoom, Room, ChatMessage
 from user.models import User
-
+import re
+from message.models import Message,UserMessage
 connect_list = {}  # 一个元素对应一个房间
 
 
@@ -109,6 +110,37 @@ class ChatConsumer(WebsocketConsumer):
                 auther=user,
                 room=Room.objects.get(id=roomId)
             )
+            if re.search(r'@.+\s', text) is not None :
+                 # at = re.search(r'@.+\s', text).span()
+                at = re.search(r'@[^ ]+', text).span()
+                nickname = text[at[0] + 1:at[1]]
+                print(nickname)
+                if str(nickname) == "全体成员":
+                    print(21)
+                    userRooms = UserRoom.objects.filter(room__id=roomId)
+                    for userRoom in userRooms:
+                        if userRoom.user.id != userId:
+                            content = str(User.objects.get(id=userId).nickname)+" 在 "+str(Room.objects.get(id=roomId).name)+" 房间内@了您，消息内容为："
+                            message = Message(content=content+text[0:at[0]] + text[at[1]:],
+                                              publisher=User.objects.get(id=userId).nickname)
+                            message.save()
+                            print(12)
+                            user_message = UserMessage(user=userRoom.user, message=message)
+                            user_message.save()
+                else:
+                    users = User.objects.filter(nickname=str(nickname))
+                    print(nickname)
+                    for user in users:
+                        content = str(User.objects.get(id=userId).nickname) + " 在 " + str(Room.objects.get(id=roomId).name) + " 房间内@了您，消息内容为："
+                        message = Message(content=content+text[0:at[0]] + text[at[1]:],
+                                          publisher=User.objects.get(id=userId).nickname)
+                        message.save()
+                        user_message = UserMessage(user=user, message=message)
+                        user_message.save()
+
+
+
+
             for connect in connect_list[roomId]:
                 ret_dit = {
                     "id": str(chatMessage.id),
