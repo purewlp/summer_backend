@@ -136,6 +136,8 @@ def refuse(request):
         message=Message.objects.get(id=messageID)
         invitation=message.invitation
         invitation.delete()
+        teamID=invitation.team_id
+        team=Team.objects.get(id=teamID)
         return JsonResponse({'errno':0,'msg':"您已拒绝"+team.name+"团队的邀请"})
     else:
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
