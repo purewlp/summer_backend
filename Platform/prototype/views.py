@@ -244,15 +244,15 @@ def getAllPreview(request):
 
 def getPreview(request):
     if request.method == 'GET':
-        id = request.GET.get('prototypeID')
-        try:
-            prototype = Prototype.objects.get(id=id)
-            if not prototype.isPreview:
-                return JsonResponse({'errno': 1003})
-            return JsonResponse({'errno': 0, 'componentData': prototype.componentData,
-                                 'canvasStyleData': prototype.canvasStyleData})
-        except:
-            return JsonResponse({'errno': 1002})
+        id = request.GET.get('prototypeId')
+        # try:
+        prototype = Prototype.objects.get(id=id)
+        if not prototype.isPreview:
+            return JsonResponse({'errno': 1003})
+        return JsonResponse({'errno': 0, 'componentData': prototype.componentData,
+                                'canvasStyleData': prototype.canvasStyleData})
+        # except:
+        #     return JsonResponse({'errno': 1002})
 
     else:
         return JsonResponse({'errno': 1001})

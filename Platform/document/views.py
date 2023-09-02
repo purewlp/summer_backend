@@ -185,13 +185,13 @@ def versionList(request):
         documentID=request.GET.get('document_id')
         versions=DocumentVersion.objects.filter(document_id=documentID)
         version_list=[]
-        for version in versons:
+        for version in versions:
             version_data={
                 'version_id':version.id,
                 'name':version.name,
                 'content':version.content,
-                'edited_time':version.edited_time,
-                'version':version
+                'edited_time':version.edited_time.strftime("%Y-%m-%d %H:%M:%S"),
+                'version':version.version
             }
             version_list.append(version_data)
         return JsonResponse({'errno':0,'version_list':version_list})
