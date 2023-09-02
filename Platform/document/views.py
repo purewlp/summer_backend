@@ -208,8 +208,8 @@ def recover(request):
         document.content=version.content
         document.edited_time=timezone.now()
         document.save()
-        DocumentVersion.objects.create(document=document,name=document.name,
-        content=document.content)
+        # DocumentVersion.objects.create(document=document,name=document.name,
+        # content=document.content)
         return JsonResponse({'errno':0,'msg':"保存成功"})
     else :
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
