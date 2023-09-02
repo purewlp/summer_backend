@@ -120,10 +120,9 @@ def receive(request):
         UserRoom.objects.create(user=user,room=room)
         members = team.members.filter(team=team)
         for member in members:
-            if member.id != user.id:
-                personalRoom=Room.objects.create(team=team, rank=2, name=user.nickname+" "+member.nickname)
-                UserRoom.objects.create(room=personalRoom,user=member)
-                UserRoom.objects.create(room=personalRoom,user=user)
+            personalRoom=Room.objects.create(team=team, rank=2, name=user.nickname+" "+member.nickname)
+            UserRoom.objects.create(room=personalRoom,user=member)
+            UserRoom.objects.create(room=personalRoom,user=user)
         invitation=Invitation.objects.filter(recipient=user,team=team)
         invitation.delete()
         return JsonResponse({'errno':0,'msg':"您已接受团队邀请，成为"+team.name+"的一员"})
@@ -137,8 +136,8 @@ def refuse(request):
         message=Message.objects.get(id=messageID)
         invitation=message.invitation
         invitation.delete()
-        teamID = invitation.team_id
-        team = Team.objects.get(id=teamID)
+        teamID=invitation.team_id
+        team=Team.objects.get(id=teamID)
         return JsonResponse({'errno':0,'msg':"您已拒绝"+team.name+"团队的邀请"})
     else:
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
