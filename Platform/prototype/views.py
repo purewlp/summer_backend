@@ -32,17 +32,19 @@ def savePrototype(request):
 def getPrototype(request):
     if request.method == 'GET':
         id = request.GET.get('prototypeID')
-        try:
-            prototype = Prototype.objects.get(id=id)
-            if '-' in prototype.componentData:
-                try:
-                    componentData = Prototype.objects.get(id=prototype.componentData).componentData
-                except:
-                    compnent = prototype.componentData
-            return JsonResponse({'errno': 0, 'componentData': componentData,
-                                 'canvasStyleData': prototype.canvasStyleData})
-        except:
-            return JsonResponse({'errno': 1002})
+        # try:
+        # if Prototype.componentData == null:
+        prototype = Prototype.objects.get(id=id)
+        componentData = ''
+        if '-' in str(prototype.componentData):
+            try:
+                componentData = Prototype.objects.get(id=prototype.componentData).componentData
+            except:
+                componentData = prototype.componentData
+        return JsonResponse({'errno': 0, 'componentData': componentData,
+                                'canvasStyleData': prototype.canvasStyleData})
+        # except:
+        #     return JsonResponse({'errno': 1002})
 
     else:
         return JsonResponse({'errno': 1001})
