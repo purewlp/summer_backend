@@ -320,7 +320,7 @@ class GroupDeleteView(View):
             room = Room.objects.get(id=roomId)
             for delete in dels:
                 print(delete)
-                deleted = User.objects.get(id=delete)
+                deleted = User.objects.get(id=int(delete))
                 UserRoom.objects.get(room=room, user=deleted).delete()
         except:
             return HttpResponse({"errno": "根本找不到"}, status=400)

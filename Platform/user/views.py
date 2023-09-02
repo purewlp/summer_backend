@@ -141,8 +141,8 @@ def uploadAvatar(request):
         avatar=request.FILES['avatar']
         user=User.objects.get(id=id)
         print(user.avatar)
-        if user.avatar:
-            os.remove(user.avatar.path)
+        # if user.avatar:
+        #     os.remove(user.avatar.path)
         user.avatar=avatar
         user.save()
         user.avatar_url='http://43.143.140.26'+user.avatar.url
