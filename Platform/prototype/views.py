@@ -121,6 +121,7 @@ def setPrototype(request):
         #     componentData = Prototype.objects.get(id='10005-11').componentData
         #     canvasStyleData = Prototype.objects.get(id='10005-11').canvasStyleData
         id = newPrototype(projectID, model, title, canvasStyleData)
+        print("111")
 
 
         # prototype = Prototype(id=id, title=title, canvasStyleData=canvasStyleData)

@@ -190,7 +190,8 @@ def search(request):
                 'email':user.email,
                 'nickname':user.nickname,
                 'realname':user.realname,
-                'avatar_url':avatar_url
+                'avatar_url':avatar_url,
+                'hover':False,
             }
             search_list.append(userdata)
         return JsonResponse({'errno':0,'search_list':search_list})

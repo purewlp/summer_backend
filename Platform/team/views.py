@@ -274,6 +274,18 @@ def showDetail(request):
             'avatar':team.avatar_url,
             'num':num,
             'description':team.description,
+            'notice':team.notice,
         }
         return JsonResponse({'errno':0,'team_info':team_info})
     return JsonResponse({'errno':1001,'meg':"请求方式错误"})
+
+def edit(request):
+    if request.method == 'POST':
+        teamID=request.POST.get('team_id')
+        notice=request.POST.get('notice')
+        team=Team.objects.get(id=teamID)
+        team.notice=notice
+        team.save()
+        return JsonResponse({'errno':0,'msg':"成功添加公告"})
+    else:
+        return JsonResponse({'errno':1001,'msg':"请求方式错误"})

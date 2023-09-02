@@ -285,6 +285,7 @@ def search(request):
                         'finished_time': finished_time,
                         'isEditing': False,
                         'newName': '',
+                        'hover':False,
                     }
                     project_list.append(project_data)
             return JsonResponse({'errno': 0, 'project_list': project_list})
@@ -309,6 +310,7 @@ def search(request):
                         'finished_time': finished_time,
                         'isEditing': False,
                         'newName': '',
+                        'hover':False,
                     }
                     project_list.append(project_data)
             return JsonResponse({'errno': 0, 'project_list': project_list})
@@ -334,6 +336,7 @@ def search(request):
                         'finished_time': finished_time,
                         'isEditing': False,
                         'newName': '',
+                        'hover':False,
                     }
                     project_list.append(project_data)
             return JsonResponse({'errno': 0, 'project_list': project_list})

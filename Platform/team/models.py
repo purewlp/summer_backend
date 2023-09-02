@@ -13,6 +13,7 @@ class Team(models.Model):
     name=models.CharField(max_length=100)
     creator=models.ForeignKey(User,on_delete=models.CASCADE,related_name='teams_created')
     members = models.ManyToManyField(User,through='Membership')
+    notice=models.CharField(max_length=255,null=True)
     def team_directory_path(instance,filename):
         return f'avatars/team/teamID_{instance.id}_{filename}'
     avatar=models.ImageField("avatar",upload_to=team_directory_path,null=True,blank=True)
