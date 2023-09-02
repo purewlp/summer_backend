@@ -100,6 +100,7 @@ def list(request):
                     'finished_time':finished_time,
                     'isEditing':False,
                     'newName':'',
+                    'hover':False,
                 }
                 project_list.append(project_data)
         return JsonResponse({'errno':0,'project_list':project_list})
@@ -163,6 +164,7 @@ def ownList(request):
                     'finished_time':finished_time,
                     'isEditing':False,
                     'newName':'',
+                    'hover':False
                 }
                 project_list.append(project_data)
         return JsonResponse({'errno':0,'project_list':project_list})
@@ -244,6 +246,7 @@ def collectList(request):
                     'finished_time':finished_time,
                     'isEditing':False,
                     'newName':'',
+                    'hover':False
                 }
                 project_list.append(project_data)
         return JsonResponse({'errno':0,'project_list':project_list})
@@ -413,7 +416,7 @@ def copy(request):
             canvasStyleData=prototype.canvasStyleData)
             new_prototype.save()
             ProjectPrototype.objects.create(project_id=new_project.id,prototype=new_prototype)
-        return JsonResponse({'errno':0,'msg':'成功创建副本'})
+        return JsonResponse({'errno':0,'msg':'成功创建副本','project_id':new_project.id})
     else :
         return JsonResponse({'errno':1001,'msg':"请求方式错误"})
         
