@@ -134,9 +134,8 @@ class RoomList(View):
                 elif userRoom.room.rank == 2 and userRoom.room.team == team:
                     others = UserRoom.objects.filter(room=userRoom.room)
                     for other in others:
-                        if other.user.id !=userId:
+                        if int(other.user.id) !=int(userId):
                             roomName = str(other.user.nickname)
-                            break
                     personalRoom = {
                         'roomName': roomName,
                         'roomId': str(userRoom.room.id),
